@@ -1,0 +1,8 @@
+# Python 3.8.2
+PyQt5==5.15.0
+qimage2ndarray==1.8.3
+numpy==1.19.1
+numba==0.50.1
+scipy==1.5.2
+PyMatting==1.0.6
+

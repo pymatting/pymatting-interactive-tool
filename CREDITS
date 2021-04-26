@@ -1,0 +1,61 @@
+<b>The PyMatting Interactive Tool uses several libraries that are compatibly licensed. These are listed below.</b>
+<pre>
+Name:       <b>PyQt5</b>
+Author:     <a href="mailto:info@riverbankcomputing.com">Riverbank Computing</a>
+Website:    <a href = https://riverbankcomputing.com>https://riverbankcomputing.com</a>
+License:    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPL-3.0-or-later</a>
+    For details, see licenses/GNUGPL3/pyqt5.txt or
+    <a href="https://github.com/baoboa/pyqt5/blob/master/LICENSE">here</a> or <a href="https://riverbankcomputing.com/software/pyqt/intro">here</a> in section "License"
+<hr>
+Name:       <b>PyMatting</b>
+Authors:    - <a href="https://dbs.cs.uni-duesseldorf.de/mitarbeiter.php?id=germer">Thomas Germer</a>
+            - <a href="mailto:tobias.uelwer@hhu.de">Tobias Uelwer</a>
+            - <a href="https://dbs.cs.uni-duesseldorf.de/mitarbeiter.php?id=conrad">Stefan Conrad</a>
+            - <a href="https://www.cs.hhu.de/en/research-groups/machine-learning/our-team/team/harmeling">Stefan Harmeling</a>
+Repository: <a href="https://github.com/pymatting/pymatting">https://github.com/pymatting/pymatting</a>
+License:    <a href="https://opensource.org/licenses/MIT">MIT</a>
+    For details, see licenses/MIT/pymatting.txt or <a href="https://github.com/pymatting/pymatting/blob/master/LICENSE.md">here</a>
+<hr>
+Name:       <b>qimage2ndarray</b>
+Author:     <a href="mailto:hans_meine@gmx.net">Hans Meine</a>
+Repository: <a href="https://github.com/hmeine/qimage2ndarray">https://github.com/hmeine/qimage2ndarray</a>
+License:    <a href="https://opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
+    For details, see licenses/BSD/qimage2ndarray.txt or <a href="https://github.com/hmeine/qimage2ndarray/blob/master/LICENSE.txt">here</a>
+<hr>
+Name:       <b>NumPy</b>
+Author:     <a href="mailto:teoliphant@gmail.com">Travis E. Oliphant</a>
+Maintainer: <a href="mailto:numpy-discussion@python.org">NumPy Developers</a>
+Repository: <a href="https://github.com/numpy/numpy">https://github.com/numpy/numpy</a>
+License:    <a href="https://opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
+    For details, see licenses/BSD/numpy.txt or <a href="https://numpy.org/doc/stable/license.html">here</a>
+<hr>
+Name:       <b>Numba</b>
+Authors:    <a href="mailto:numba-users@continuum.io">Anaconda, Inc.</a>
+Repository: <a href="https://github.com/numba/numba">https://github.com/numba/numba</a>
+License:    <a href="https://opensource.org/licenses/BSD-2-Clause">BSD-2-Clause</a>
+    For details, see licenses/BSD/numba.txt or <a href="https://github.com/numba/numba/blob/master/LICENSE">here</a>
+<hr>
+Name:       <b>SciPy</b>
+Maintainer: <a href="mailto:scipy-dev@python.org">SciPy Developers</a>
+Repository: <a href="https://github.com/scipy/scipy">https://github.com/scipy/scipy</a>
+License:    <a href="https://opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
+    For details, see licenses/BSD/scipy.txt or <a href="https://github.com/scipy/scipy/blob/master/LICENSE.txt">here</a>
+<hr>
+Name:       <b>scikit-image</b>
+Maintainer: <a href="mailto:stefan@sun.ac.za">Stefan van der Walt</a>
+Repository: <a href="https://github.com/scikit-image/scikit-image">https://github.com/scikit-image/scikit-image</a>
+License:    <a href="https://opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a>
+    For details, see licenses/BSD/scikit-image.txt or <a href="https://github.com/scikit-image/scikit-image/blob/master/LICENSE.txt">here</a>
+<hr>
+Name:       <b>Matplotlib</b>
+Authors:    <a href="mailto:matplotlib-users@python.org">John D. Hunter, Michael Droettboom</a>
+Repository: <a href="https://github.com/matplotlib/matplotlib">https://github.com/matplotlib/matplotlib</a>
+License:    Based on the <a href=https://docs.python.org/3/license.html#psf-license-agreement-for-python-release>PSF License</a>
+    For details, see licenses/PSF/matplotlib.txt or <a href="https://matplotlib.org/3.3.3/users/license.html">here</a>
+<hr>
+Name:       <b>Requests</b>
+Authors:    <a href="mailto:me@kennethreitz.org">Kenneth Reitz</a>
+Repository: <a href="https://github.com/psf/requests">https://github.com/psf/requests</a>
+License:    <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0 License</a>
+    For details, see licenses/APACHE2/requests.txt or <a href="https://github.com/psf/requests/blob/master/LICENSE">here</a>
+</pre>
