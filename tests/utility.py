@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 import requests
 from zipfile import ZipFile
 from PyQt5.QtCore import QFileInfo, QDir
@@ -33,10 +33,12 @@ zip_names = [
     "trimap_training_lowres.zip",
 ]
 
+
 def setupImages():
     a = downloadAlphaMattinComImages()
     b = makeRandomImage()
     return a and b
+
 
 def makeRandomImage():
     outputPath = QFileInfo(__file__).dir()
@@ -53,24 +55,25 @@ def makeRandomImage():
     else:
         return False
 
+
 def downloadAlphaMattinComImages():
     outputPath = QFileInfo(__file__).dir()
     try:
         if outputPath.mkdir(imagesFolderName) or QFileInfo.exists(
-                outputPath.filePath(imagesFolderName)
+            outputPath.filePath(imagesFolderName)
         ):
             outputPath.cd(imagesFolderName)
 
             if (
-                    QFileInfo(
-                        QDir(outputPath.filePath(canvasOutputFolder)).filePath(imageName)
-                    ).exists()
-                    and QFileInfo(
-                QDir(outputPath.filePath(gtAlphaOutputFolder)).filePath(imageName)
-            ).exists()
-                    and QFileInfo(
-                QDir(outputPath.filePath("Trimap1")).filePath(imageName)
-            ).exists()
+                QFileInfo(
+                    QDir(outputPath.filePath(canvasOutputFolder)).filePath(imageName)
+                ).exists()
+                and QFileInfo(
+                    QDir(outputPath.filePath(gtAlphaOutputFolder)).filePath(imageName)
+                ).exists()
+                and QFileInfo(
+                    QDir(outputPath.filePath("Trimap1")).filePath(imageName)
+                ).exists()
             ):
                 print("All images have been downloaded and extracted already.")
                 return True
@@ -111,27 +114,36 @@ def makeProject(imageName, newBackground=False):
     alphaMatte = Image(alphaMattePath)
     trimapPreview = trimapToRgba(Image(trimapPath))
     canvas = Image(canvasPath)
-    canvas  = canvas.convertToFormat(Image.Format_ARGB32)
-    alphaMatte  = alphaMatte.convertToFormat(Image.Format_Grayscale8)
-    return  Project(canvas,alphaMatte, trimapPreview, openRandomImage()) if newBackground else Project(canvas, alphaMatte, trimapPreview)
+    canvas = canvas.convertToFormat(Image.Format_ARGB32)
+    alphaMatte = alphaMatte.convertToFormat(Image.Format_Grayscale8)
+    return (
+        Project(canvas, alphaMatte, trimapPreview, openRandomImage())
+        if newBackground
+        else Project(canvas, alphaMatte, trimapPreview)
+    )
 
 
 def openCanvas(fileName):
     return __openImage(fileName, 1)
 
+
 def openAlphaMatte(fileName):
     return __openImage(fileName, 2)
+
 
 def openTrimap(fileName):
     return __openImage(fileName, 3)
 
+
 def openTrimapPreview(fileName):
     return trimapToRgba(__openImage(fileName, 3))
+
 
 def openRandomImage():
     return __openImage("random", 4)
 
-def __openImage(fileName, type:int):
+
+def __openImage(fileName, type: int):
     outputPath = QFileInfo(__file__).dir()
     outputPath.cd(imagesFolderName)
     fileName = f"{fileName}.png"
@@ -153,6 +165,7 @@ def __openImage(fileName, type:int):
     image = image.convertToFormat(format)
     return image
 
+
 def guitest(setupFunc, testFunc, destroyFunc):
     def setup():
         return setupFunc()
@@ -170,4 +183,3 @@ def guitest(setupFunc, testFunc, destroyFunc):
     timer.timeout.connect(lambda: testAndDestroy(setupResult))
     timer.start()
     app.exec_()
-

@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtWidgets as qtw
@@ -6,7 +6,6 @@ from model.misc import Image
 
 
 class BaseScene(qtw.QGraphicsScene):
-
     def __init__(self, project, parent=None):
         super(BaseScene, self).__init__(parent=parent)
         if project:
@@ -20,7 +19,7 @@ class BaseScene(qtw.QGraphicsScene):
     ####################################################################################################################
 
     def updateSceneRect(self, image: Image):
-        """ Updates the scene rect to have a small margin on each side
+        """Updates the scene rect to have a small margin on each side
 
         :param image: Image that needs to be displayed
         :return: None

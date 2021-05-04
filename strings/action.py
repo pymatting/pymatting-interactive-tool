@@ -1,9 +1,9 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 newActionName = "New Project.."
 openActionName = "Open Project.."
-saveActionName =  "Save"
-saveAsActionName =  "Save as.."
+saveActionName = "Save"
+saveAsActionName = "Save as.."
 quitActionName = "Quit"
 scaleActionName = "Scale"
 undoActionName = "Undo"

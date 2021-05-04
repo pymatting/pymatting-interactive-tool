@@ -1,16 +1,21 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from model.misc import Solver
-from model.events import PauseEvent, StopEvent, ContinueEvent, QuitEvent, UpdateEvent, Event
+from model.events import (
+    PauseEvent,
+    StopEvent,
+    ContinueEvent,
+    QuitEvent,
+    UpdateEvent,
+    Event,
+)
 from model.enum import Reason, Method, Kernel, Preconditioner
 from queue import Queue
 
 
 class Controller(qtc.QObject):
-    """ This class controls the solver and servers as an agent between the solver and the view elements
-
-    """
+    """This class controls the solver and servers as an agent between the solver and the view elements"""
 
     stopped = qtc.pyqtSignal()
     started = qtc.pyqtSignal()
@@ -30,8 +35,13 @@ class Controller(qtc.QObject):
         self.continueEvent = ContinueEvent()
         self.eventQueue = Queue()
         self.queueEvent(self.stopEvent)
-        self.solver = Solver(self.project.canvas(), self.project.trimapPreview(), self.project.alphaMatte(),
-                             self.eventQueue, self.continueEvent)
+        self.solver = Solver(
+            self.project.canvas(),
+            self.project.trimapPreview(),
+            self.project.alphaMatte(),
+            self.eventQueue,
+            self.continueEvent,
+        )
         self.solver.start()
         self.setupConnections()
 
@@ -92,7 +102,7 @@ class Controller(qtc.QObject):
         self.queueUpdateEvent(Reason.preIterChanged, preIter)
         self.restart()
 
-    def changePrintError(self, printError:bool):
+    def changePrintError(self, printError: bool):
         self.queueUpdateEvent(Reason.printErrorChanged, printError)
 
     def start(self):

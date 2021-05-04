@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -24,7 +24,7 @@ def matchScale(target: Image, source: Image):
 
 
 def makeQThread(worker, threadName):
-    """ Moves the worker object inside a QThread with the given threadName
+    """Moves the worker object inside a QThread with the given threadName
 
     :param worker: Object that should be moved inside another thread
     :param threadName: name of the thread
@@ -38,7 +38,7 @@ def makeQThread(worker, threadName):
 
 
 def cutout(image: Image, alphaMatte: Image, foreground: bool = True):
-    """ Cuts out the area inside the image defined by the alphaMatte
+    """Cuts out the area inside the image defined by the alphaMatte
 
     :param image: Target image
     :param alphaMatte: Alpha-Matte
@@ -71,7 +71,11 @@ def grayToImage(array: np.ndarray) -> Image:
 
 
 def ndarrayToImage(array: np.ndarray, normalized=False) -> Image:
-    return Image(qimage2ndarray.array2qimage(array * 255) if normalized else qimage2ndarray.array2qimage(array))
+    return Image(
+        qimage2ndarray.array2qimage(array * 255)
+        if normalized
+        else qimage2ndarray.array2qimage(array)
+    )
 
 
 def imageToTrimap(image: Image) -> Image:
@@ -98,7 +102,7 @@ def trimapToRgba(trimap: Image) -> Image:
 
 
 def calculateDiffRect(img1: Image, img2: Image = None):
-    """ Calculates the coordinates of the rectangle that surrounds the difference of two images with a minimal area
+    """Calculates the coordinates of the rectangle that surrounds the difference of two images with a minimal area
 
     :param img1: Image 1
     :param img2: Image 2
@@ -114,7 +118,7 @@ def calculateDiffRect(img1: Image, img2: Image = None):
 
 
 def findBoundingRect(boolArray):
-    """ Calculates coordinates of rectangle that surrounds true values inside boolArray with a minimal area
+    """Calculates coordinates of rectangle that surrounds true values inside boolArray with a minimal area
 
     :param boolArray: Boolean array with True and False
     :return: (Top left X, Top Left Y, Bottom Right X, Bottom Right Y)
@@ -131,6 +135,10 @@ def findBoundingRect(boolArray):
 def find_bounding_rect_(boolArray):
     indexedArray = np.where(boolArray)
     if indexedArray[0].size and indexedArray[1].size:
-        return np.min(indexedArray[1]), np.min(indexedArray[0]), np.max(indexedArray[1]) + 1, np.max(
-            indexedArray[0]) + 1
+        return (
+            np.min(indexedArray[1]),
+            np.min(indexedArray[0]),
+            np.max(indexedArray[1]) + 1,
+            np.max(indexedArray[0]) + 1,
+        )
     return -1, -1, -1, -1

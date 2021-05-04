@@ -1,10 +1,11 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from enum import Enum
 
+
 class Preconditioner(Enum):
-    none = 0,
-    jacobi = 1,
+    none = (0,)
+    jacobi = (1,)
     vcycle = 2
 
     def isNone(self):

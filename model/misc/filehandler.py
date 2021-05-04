@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtWidgets as qtw
@@ -9,13 +9,17 @@ from model.enum import Status
 
 from view.messagebox import MessageBoxOverwrite, SaveMessageBox
 from view.dialog import NewProjectDialog
-from strings import saveAsTitle, overwriteMessageText, saveErrorText, openTitle, settingsFileName
+from strings import (
+    saveAsTitle,
+    overwriteMessageText,
+    saveErrorText,
+    openTitle,
+    settingsFileName,
+)
 
 
 class FileHandler(qtc.QObject):
-    """ Implements functionalities for saving, opening and creating a new project.
-
-    """
+    """Implements functionalities for saving, opening and creating a new project."""
 
     finished = qtc.pyqtSignal(str)
     error = qtc.pyqtSignal(str)
@@ -44,7 +48,7 @@ class FileHandler(qtc.QObject):
         self.saver.finished.connect(self.onSave)
 
     def new(self, filePath=None):
-        """ Creats a new project.
+        """Creats a new project.
 
         :param filePath: Image path. If not specified, a FileDialog is shown to pick a file
         :return: None
@@ -52,11 +56,15 @@ class FileHandler(qtc.QObject):
         maybeSaveStatus = self.maybeSave()
         if maybeSaveStatus.isSuccessful():
             if not filePath:
-                filePath, _ = qtw.QFileDialog.getOpenFileName(caption="New Project",
-                                                              filter='Image (*.png *.jpg *.jpeg) ;; All Files (*)',
-                                                              initialFilter='Image (*.png *.jpg *.jpeg)')
+                filePath, _ = qtw.QFileDialog.getOpenFileName(
+                    caption="New Project",
+                    filter="Image (*.png *.jpg *.jpeg) ;; All Files (*)",
+                    initialFilter="Image (*.png *.jpg *.jpeg)",
+                )
             if filePath and qtc.QFileInfo(filePath).isFile():
-                accepted, projectName = NewProjectDialog(qtc.QFileInfo(filePath).fileName().split(".")[0]).execute()
+                accepted, projectName = NewProjectDialog(
+                    qtc.QFileInfo(filePath).fileName().split(".")[0]
+                ).execute()
                 if accepted:
                     canvas = Image(filePath)
                     if not canvas.isNull():
@@ -70,7 +78,7 @@ class FileHandler(qtc.QObject):
                 self.finished.emit("Creating a new project has been canceled!")
 
     def open(self, path: str = None):
-        """ Open a project.
+        """Open a project.
 
         :param path: Open project at specified path. If path is None, show a FileDialog
         :return: None
@@ -80,7 +88,12 @@ class FileHandler(qtc.QObject):
             if not path:
                 path = qtw.QFileDialog.getExistingDirectory(caption=openTitle)
             if path:
-                if qtc.QFileInfo(path).isDir() and qtc.QFileInfo(qtc.QDir(path).filePath(settingsFileName)).isFile():
+                if (
+                    qtc.QFileInfo(path).isDir()
+                    and qtc.QFileInfo(
+                        qtc.QDir(path).filePath(settingsFileName)
+                    ).isFile()
+                ):
                     self.requestOpening.emit(path, self.project)
                 else:
                     self.error.emit("Opening failed!")
@@ -97,7 +110,7 @@ class FileHandler(qtc.QObject):
             self.error.emit("Opening project failed!")
 
     def save(self, nowait=False):
-        """ Save the Project. If the project has not been saved yet, execute saveAs instead.
+        """Save the Project. If the project has not been saved yet, execute saveAs instead.
 
         :param nowait: If nowait is true, block the GUI Thread, else execute in a Saver-Thread
         :return: None if save is execute, else status of saveAs
@@ -114,7 +127,7 @@ class FileHandler(qtc.QObject):
 
     @qtc.pyqtSlot()
     def saveAs(self, nowait=False):
-        """ Saves the project to a folder. Also shows a FileDialog
+        """Saves the project to a folder. Also shows a FileDialog
 
         :param nowait: Block GUI-Thread if nowait is true, else execute in Saver-Thread
         :return: Status of this action
@@ -127,7 +140,9 @@ class FileHandler(qtc.QObject):
                     if nowait:
                         return self.saver.saveAs(projectFolderPath, self.project)
                     else:
-                        self.requestSaving[str, Project].emit(projectFolderPath, self.project)
+                        self.requestSaving[str, Project].emit(
+                            projectFolderPath, self.project
+                        )
                 elif status.isAborted():
                     self.finished.emit("Saving canceled!")
                 elif status.isFailed():
@@ -141,7 +156,7 @@ class FileHandler(qtc.QObject):
             return Status.aborted
 
     def maybeSave(self):
-        """ Prompts a dialog asking if the user wants to save before continuing their action if the current project
+        """Prompts a dialog asking if the user wants to save before continuing their action if the current project
         is edited and has not been saved yet.
 
         :return: Status
@@ -165,7 +180,7 @@ class FileHandler(qtc.QObject):
             self.error.emit("Saving failed!")
 
     def createProjectFolder(self, path: str):
-        """ Creates the project folder.
+        """Creates the project folder.
         If the folder already exists, prompts a dialog asking the user if he/she wants to overwrite it.
 
         :param path: Path where the folder should be created
@@ -176,14 +191,16 @@ class FileHandler(qtc.QObject):
         if dir.mkdir(folderName) and dir.cd(folderName):
             return Status.successful, dir.absolutePath()
         elif dir.cd(folderName):
-            response = MessageBoxOverwrite(overwriteMessageText.format(folderName, path)).exec()
+            response = MessageBoxOverwrite(
+                overwriteMessageText.format(folderName, path)
+            ).exec()
             if response == MessageBoxOverwrite.Overwrite:
                 return Status.successful, dir.absolutePath()
             return Status.aborted, None
         return Status.failed, None
 
     def updateSettingsFile(self):
-        """ Updates the settings file
+        """Updates the settings file
 
         :return: None
         """

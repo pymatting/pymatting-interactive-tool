@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 from .baseworker import *
 from .cropper import *
 from .floodfiller import *

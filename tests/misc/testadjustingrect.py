@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from PyQt5 import QtCore as qtc
@@ -6,7 +6,6 @@ from model.misc import AdjustingRect
 
 
 class TestAdjustingRect(unittest.TestCase):
-
     def testAddPointstraight(self):
         adjustRect = AdjustingRect()
         adjustRect.addPoint(qtc.QPointF(0, 0), 1)

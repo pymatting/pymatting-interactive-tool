@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -9,9 +9,19 @@ from view.icon import Icon
 class ToolButton(qtw.QToolButton):
     pressed = qtc.pyqtSignal(object)
 
-    def __init__(self, value, icon: Icon, toolTip: str, shortcut=None,
-                 autoExclusive=True,
-                 checkable=True, checked=False, enabled=True, autoRepeat=False, parent=None):
+    def __init__(
+        self,
+        value,
+        icon: Icon,
+        toolTip: str,
+        shortcut=None,
+        autoExclusive=True,
+        checkable=True,
+        checked=False,
+        enabled=True,
+        autoRepeat=False,
+        parent=None,
+    ):
         super(ToolButton, self).__init__(parent)
         self.setAutoExclusive(autoExclusive)
         self.value = value

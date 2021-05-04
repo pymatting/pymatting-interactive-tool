@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -6,16 +6,14 @@ from qimage2ndarray import byte_view, rgb_view, raw_view, alpha_view
 
 
 class Image(qtg.QImage):
-    """ Wraps the QImage class providing functionalities to generate views into the memory if an instance
-
-    """
+    """Wraps the QImage class providing functionalities to generate views into the memory if an instance"""
 
     @classmethod
     def empty(cls, size: qtc.QSize, format=qtg.QImage.Format_ARGB32):
         return Image.full(size, qtc.Qt.transparent, format)
 
     @classmethod
-    def full(cls, size:qtc.QSize, color, format=qtg.QImage.Format_ARGB32):
+    def full(cls, size: qtc.QSize, color, format=qtg.QImage.Format_ARGB32):
         image = qtg.QImage(size, format)
         image.fill(color)
         return Image(image)
@@ -41,7 +39,7 @@ class Image(qtg.QImage):
         return self.__view(rgb_view, "rgb", normalized)
 
     def byteView(self, normalized=False):
-        """ Creates a byte view of an image instance
+        """Creates a byte view of an image instance
 
         :param normalized: values are between 0 and 1 if normalized is true
         :return: Returns a byte view. Colors are in order Blue, Green, Red, Alpha for RGBA Images
@@ -54,33 +52,44 @@ class Image(qtg.QImage):
     def rawView(self, normalized=False):
         return self.__view(raw_view, "raw", normalized)
 
-    def copy(self, rect: qtc.QRect = None) -> 'Image':
+    def copy(self, rect: qtc.QRect = None) -> "Image":
         if rect:
             cp = super(Image, self).copy(rect)
         else:
             cp = super(Image, self).copy()
         return Image(cp)
 
-    def convertToFormat(self, format: qtg.QImage.Format, flags=None) -> 'Image':
+    def convertToFormat(self, format: qtg.QImage.Format, flags=None) -> "Image":
         if flags:
             result = super(Image, self).convertToFormat(format, flags)
         else:
             result = super(Image, self).convertToFormat(format)
         return Image(result)
 
-    def scaled(self, width: int, height: int, aspectRatioMode: qtc.Qt.AspectRatioMode = None,
-               transformMode: qtc.Qt.TransformationMode = None) -> 'Image':
+    def scaled(
+        self,
+        width: int,
+        height: int,
+        aspectRatioMode: qtc.Qt.AspectRatioMode = None,
+        transformMode: qtc.Qt.TransformationMode = None,
+    ) -> "Image":
         if aspectRatioMode and transformMode:
-            result = super(Image, self).scaled(width, height, aspectRatioMode, transformMode)
+            result = super(Image, self).scaled(
+                width, height, aspectRatioMode, transformMode
+            )
         elif aspectRatioMode:
             result = super(Image, self).scaled(width, height, aspectRatioMode)
         elif transformMode:
-            result = super(Image, self).scaled(width, height, transformMode=transformMode)
+            result = super(Image, self).scaled(
+                width, height, transformMode=transformMode
+            )
         else:
             result = super(Image, self).scaled(width, height)
         return Image(result)
 
-    def transformed(self, matrix: qtg.QTransform, mode: qtc.Qt.TransformationMode = None) -> 'Image':
+    def transformed(
+        self, matrix: qtg.QTransform, mode: qtc.Qt.TransformationMode = None
+    ) -> "Image":
         if mode:
             trans = super(Image, self).transformed(matrix, mode)
         else:

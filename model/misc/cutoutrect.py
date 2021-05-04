@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -6,7 +6,7 @@ from numpy import sign
 
 
 class CutoutRect(qtc.QObject):
-    """ This is a class which wraps some functionalities for displaying the foreground object.
+    """This is a class which wraps some functionalities for displaying the foreground object.
     This rect can also transform itself for display purposes. It can rotate, scale, translate and mirror itself. Its
     transform() function then is used to transform a QPainters coordinate system.
     """
@@ -110,7 +110,7 @@ class CutoutRect(qtc.QObject):
         self.changed.emit()
 
     def transform(self):
-        """ Builds a QTransform() with the given scale, transformation, rotation and mirroring. This
+        """Builds a QTransform() with the given scale, transformation, rotation and mirroring. This
         can be used to transform a QPainters coordinate system.
         :return: QTransform() object which has been scaled, rotated, transformed and mirror
         """
@@ -128,7 +128,9 @@ class CutoutRect(qtc.QObject):
         self.resetCenter()
 
     def resetCenter(self):
-        self.moveCenter(qtc.QPointF(self.rect().width() // 2, self.rect().height() // 2))
+        self.moveCenter(
+            qtc.QPointF(self.rect().width() // 2, self.rect().height() // 2)
+        )
 
     def mirror(self, orientation: qtc.Qt.Orientation):
         if orientation == qtc.Qt.Vertical:
@@ -148,4 +150,8 @@ class CutoutRect(qtc.QObject):
         self.mirror(qtc.Qt.Horizontal)
 
     def contains(self, point: qtc.QPointF):
-        return self.transform().map(self.polygonF()).containsPoint(point, qtc.Qt.OddEvenFill)
+        return (
+            self.transform()
+            .map(self.polygonF())
+            .containsPoint(point, qtc.Qt.OddEvenFill)
+        )

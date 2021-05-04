@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from model.misc import AdjustingRect, Image
 from model.enum import Method, Preconditioner, Reason, Kernel
@@ -23,7 +23,9 @@ class Solver(qtc.QObject, Thread):
     toleranceChanged = qtc.pyqtSignal(object)
     toleranceReached = qtc.pyqtSignal()
 
-    def __init__(self, canvas, trimapPreview, alphaMatte, eventQueue: Queue, continueEvent: Event):
+    def __init__(
+        self, canvas, trimapPreview, alphaMatte, eventQueue: Queue, continueEvent: Event
+    ):
         super(Solver, self).__init__()
         self.setName("Thread: Solver")
         self.changeImages(canvas, alphaMatte, trimapPreview)
@@ -34,7 +36,7 @@ class Solver(qtc.QObject, Thread):
         self.initCalculationVariables()
 
     def run(self) -> None:
-        """ Event Loop
+        """Event Loop
 
         :return: None
         """
@@ -42,7 +44,7 @@ class Solver(qtc.QObject, Thread):
             self.solve()
 
     def processEvents(self, queue):
-        """ Processes the events inside the queue
+        """Processes the events inside the queue
 
         :param queue: Queue
         :return:
@@ -52,7 +54,9 @@ class Solver(qtc.QObject, Thread):
             if isinstance(event, UpdateEvent):
                 if event.reason == Reason.trimapChanged:
                     if not self.adjustingRect:
-                        self.adjustingRect = AdjustingRect((0, 0), *self.alphaView.shape)
+                        self.adjustingRect = AdjustingRect(
+                            (0, 0), *self.alphaView.shape
+                        )
                     self.adjustingRect.addRect(event.value)
                 else:
                     self.adjustSystem()
@@ -143,7 +147,10 @@ class Solver(qtc.QObject, Thread):
         self.radius = 1
         self.preconditioner = Preconditioner.vcycle
         self.method = Method.cgd
-        self.kernel = (Kernel.gaussian, (1 / 16) * np.array([1, 2, 1, 2, 4, 2, 1, 2, 1]))
+        self.kernel = (
+            Kernel.gaussian,
+            (1 / 16) * np.array([1, 2, 1, 2, 4, 2, 1, 2, 1]),
+        )
         self.preiter = 1
         self.postiter = 1
         self.printError = False
@@ -164,7 +171,7 @@ class Solver(qtc.QObject, Thread):
         self.reset_p()
 
     def calculate_error(self):
-        """ Calculates the normalized residual |r|/ |b|
+        """Calculates the normalized residual |r|/ |b|
 
         :return: (|r|/|b|, has the tolerance been reached?)
         """
@@ -181,7 +188,7 @@ class Solver(qtc.QObject, Thread):
         return None, None
 
     def solve(self):
-        """ Performs an iteration of the specified method if the tolerance has not been reached yet
+        """Performs an iteration of the specified method if the tolerance has not been reached yet
 
         :return: Error
         """
@@ -190,23 +197,36 @@ class Solver(qtc.QObject, Thread):
             method = self.get_method()
             if toleranceReached is True:
                 self.calculationEnd = time()
-                print(f"Time: {timedelta(seconds=self.calculationEnd - self.calculationStart)}")
+                print(
+                    f"Time: {timedelta(seconds=self.calculationEnd - self.calculationStart)}"
+                )
                 self.toleranceReached.emit()
                 self.continueEvent.clear()
                 self.continueEvent.wait()
             elif method.isCgd():
                 M = self.get_M()
                 if M:
-                    self.alpha, self.r, self.z = self.cgd_preconditioned(self.get_A(), self.get_alpha(),
-                                                                                 self.get_r(),
-                                                                                 self.get_z(), M)
+                    self.alpha, self.r, self.z = self.cgd_preconditioned(
+                        self.get_A(), self.get_alpha(), self.get_r(), self.get_z(), M
+                    )
                 else:
-                    self.alpha, self.r, self.p = self.cgd(self.get_A(), self.get_alpha(), self.get_r(), self.get_p())
+                    self.alpha, self.r, self.p = self.cgd(
+                        self.get_A(), self.get_alpha(), self.get_r(), self.get_p()
+                    )
             elif method.isVcycle():
                 self.r = self.get_b() - self.spDot(self.get_A(), self.get_alpha())
-                self.alpha += self.vcycle(self.get_A(), self.get_r(), self.get_shape(), self.get_kernel()[1],
-                                          self.get_cache(), self.get_pre_iter(), self.get_post_iter())
-            self.alphaView[...] = np.clip(self.get_alpha().reshape(self.alphaView.shape) * 255.0, 0, 255)
+                self.alpha += self.vcycle(
+                    self.get_A(),
+                    self.get_r(),
+                    self.get_shape(),
+                    self.get_kernel()[1],
+                    self.get_cache(),
+                    self.get_pre_iter(),
+                    self.get_post_iter(),
+                )
+            self.alphaView[...] = np.clip(
+                self.get_alpha().reshape(self.alphaView.shape) * 255.0, 0, 255
+            )
             self.calculated.emit(self.error, self.rtol)
             return self.error
         except:
@@ -257,10 +277,15 @@ class Solver(qtc.QObject, Thread):
             if preconditioner.isNone():
                 self.M = None
             elif preconditioner.isVcycle():
-                self.M = lambda r: self.vcycle(self.get_A(), r, self.get_shape(), self.get_kernel()[1],
-                                               self.get_cache(),
-                                               self.get_pre_iter(),
-                                               self.get_post_iter())
+                self.M = lambda r: self.vcycle(
+                    self.get_A(),
+                    r,
+                    self.get_shape(),
+                    self.get_kernel()[1],
+                    self.get_cache(),
+                    self.get_pre_iter(),
+                    self.get_post_iter(),
+                )
             elif preconditioner.isJacobi():
                 A_diag_inv = scipy.sparse.diags(1 / self.spDiag(self.get_A()))
                 self.M = lambda r: A_diag_inv.dot(r)
@@ -384,11 +409,15 @@ class Solver(qtc.QObject, Thread):
 
     # ================================================= UPDATERS ===========================================================#
     def update_b(self, rect, isForeground):
-        update_flattend_2D_array_(rect, self.get_lambda(), isForeground, self.get_b(), self.get_shape())
+        update_flattend_2D_array_(
+            rect, self.get_lambda(), isForeground, self.get_b(), self.get_shape()
+        )
         self.reset_norm_b()
 
     def update_c(self, rect, isKnown):
-        update_flattend_2D_array_(rect, self.get_lambda(), isKnown, self.get_c(), self.get_shape())
+        update_flattend_2D_array_(
+            rect, self.get_lambda(), isKnown, self.get_c(), self.get_shape()
+        )
         self.update_A(rect, self.get_width(), self.get_L_diag(), self.get_c())
 
     def update_A(self, rect, w, L_diag, c):
@@ -402,9 +431,16 @@ class Solver(qtc.QObject, Thread):
         self.get_m_diag()[ind] = self.flatten2D(A_diag / A.multiply(A).sum(axis=0))
 
     def update_r(self, ind):
-        update_vec_(ind,
-                    self.get_b()[ind] - (self.spDot(self.get_A()[ind, 0:self.get_A().shape[1]], self.get_alpha())),
-                    self.get_r())
+        update_vec_(
+            ind,
+            self.get_b()[ind]
+            - (
+                self.spDot(
+                    self.get_A()[ind, 0 : self.get_A().shape[1]], self.get_alpha()
+                )
+            ),
+            self.get_r(),
+        )
 
     # ================================================= RESETERS ======================================================#
 
@@ -465,7 +501,7 @@ class Solver(qtc.QObject, Thread):
     # ============================================= NUMBA WRAPPERS =========================================================#
 
     def addTile(self, dest: np.ndarray, a: np.ndarray, reps: int):
-        """ Calculate dest += np.tile(a, reps)
+        """Calculate dest += np.tile(a, reps)
 
         :param dest: Where the tile should be added onto
         :param a: array
@@ -475,7 +511,7 @@ class Solver(qtc.QObject, Thread):
         return addTile_(dest.astype(np.int64), a.astype(np.int64), reps)
 
     def cgd(self, A, alpha, r, p):
-        """ Performs an parallel iteration of the cg-Method by:
+        """Performs an parallel iteration of the cg-Method by:
 
         Magnus R. Hestenes and Eduard Stiefel (1952). „Methods of Conjugate Gradients for
         Solving Linear Systems“. In: Journal of Research of the National Bureau of Standards 49.6, S. 409–436.
@@ -491,7 +527,7 @@ class Solver(qtc.QObject, Thread):
         return cgd_((A.data, A.indices, A.indptr, A.shape), alpha, r, p)
 
     def spDot(self, A, b):
-        """ Performs the dot-product of a sparse Matrix A and a dense vector b
+        """Performs the dot-product of a sparse Matrix A and a dense vector b
 
         :param A: Sparse matrix
         :param b: Dense Vector
@@ -500,7 +536,7 @@ class Solver(qtc.QObject, Thread):
         return sp_dot_((A.data, A.indices, A.indptr, A.shape), b)
 
     def spDiag(self, mat):
-        """ Returns the Diagonal of a sparse matrix
+        """Returns the Diagonal of a sparse matrix
 
         :param mat: Sparse Matrix
         :return: diag(mat)
@@ -508,15 +544,17 @@ class Solver(qtc.QObject, Thread):
         return sp_diag_((mat.data, mat.indices, mat.indptr, mat.shape))
 
     def flatten2D(self, arr):
-        """ Flattens a 2D array
+        """Flattens a 2D array
 
         :param arr: 2D array
         :return: flattened array
         """
         return flatten_2D_(arr.astype(np.float64))
 
-    def vcycle(self, A, b, shape, kernel, cache, preiter=1, postiter=1, instantSolveSize=64):
-        """ Performs the V-Cycle Algorithm as suggested by:
+    def vcycle(
+        self, A, b, shape, kernel, cache, preiter=1, postiter=1, instantSolveSize=64
+    ):
+        """Performs the V-Cycle Algorithm as suggested by:
 
         Philip G. Lee und Ying Wu (2014). Scalable Matting: A Sub-linear Approach. arXiv: 1404.3933 [cs.CV].
         Link: https://arxiv.org/abs/1404.3933
@@ -548,13 +586,22 @@ class Solver(qtc.QObject, Thread):
         x = self.spai0_step(A, b, None, m_diag, preiter)
         r = b - self.spDot(A, x)
         r_small = self.spDot(P, r)
-        x_small = self.vcycle(A_small, r_small, (h // 2, w // 2), kernel, cache, preiter, postiter, instantSolveSize)
+        x_small = self.vcycle(
+            A_small,
+            r_small,
+            (h // 2, w // 2),
+            kernel,
+            cache,
+            preiter,
+            postiter,
+            instantSolveSize,
+        )
         x += PT.dot(x_small)
         x = self.spai0_step(A, b, x, m_diag, postiter)
         return x
 
     def spai0_step(self, A, b, x, m_diag, num_iter):
-        """ Uses the SPAI-0-Algorithm as described by:
+        """Uses the SPAI-0-Algorithm as described by:
 
         Oliver Bröker, Marcus J. Grote, Carsten Mayer and Arnold Reusken (2001). „Robust Parallel
         Smoothing for Multigrid Via Sparse Approximate Inverses“. In: SIAM Journal on
@@ -582,7 +629,7 @@ class Solver(qtc.QObject, Thread):
         return spai0_step_(A.data, A.indices, A.indptr, A.shape, b, x, m_diag, num_iter)
 
     def cgd_preconditioned(self, A, alpha, r, z, M):
-        """ Performs an iteration of the preconditioned Method of Conjugate Gradients. I adopted the
+        """Performs an iteration of the preconditioned Method of Conjugate Gradients. I adopted the
         implementation for this from:
 
         Jonathan Richard Shewchuk (1994). An Introduction to the Conjugate Gradient Method Without
@@ -619,7 +666,7 @@ class Solver(qtc.QObject, Thread):
         return alpha, r, z
 
     def make_P(self, shape, kernel):
-        """ Constructs a down- and upsampling matrices P and P.T based on the given Kernel
+        """Constructs a down- and upsampling matrices P and P.T based on the given Kernel
 
         :param shape: shape of the original images
         :param kernel: flattened 3x3 matrix
@@ -632,8 +679,12 @@ class Solver(qtc.QObject, Thread):
         n2 = w2 * h2
         x2 = np.repeat(np.tile(np.arange(w2), h2), 9).astype(np.int64)
         y2 = np.repeat(np.repeat(np.arange(h2), w2), 9).astype(np.int64)
-        x = self.addTile(x2 * 2, np.array([-1, 0, 1, -1, 0, 1, -1, 0, 1], dtype=np.int64), n2)
-        y = self.addTile(y2 * 2, np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1], dtype=np.int64), n2)
+        x = self.addTile(
+            x2 * 2, np.array([-1, 0, 1, -1, 0, 1, -1, 0, 1], dtype=np.int64), n2
+        )
+        y = self.addTile(
+            y2 * 2, np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1], dtype=np.int64), n2
+        )
         mask = (0 <= x) & (x < w) & (0 <= y) & (y <= h)
         i_inds = (x2 + y2 * w2)[mask]
         j_inds = (x + y * w)[mask]
@@ -646,7 +697,12 @@ class Solver(qtc.QObject, Thread):
         return vecNorm2_(a.astype(np.float64))
 
 
-@njit(f8[:](f8[:, :]), nogil=config.config.nogil, parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    f8[:](f8[:, :]),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def flatten_2D_(arr):
     h, w = arr.shape
     result = np.empty((h * w,))
@@ -656,7 +712,12 @@ def flatten_2D_(arr):
     return result
 
 
-@njit(f8(f8[:]), nogil=config.config.nogil, parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    f8(f8[:]),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def vecNorm2_(a):
     length = a.shape[0]
     result = 0
@@ -676,8 +737,12 @@ def update_vec_(ind, values, vec):
     vec[ind] = values
 
 
-@njit(f8[:](Tuple((f8[:], i4[:], i4[:], UniTuple(i8, 2)))), nogil=config.config.nogil, parallel=config.config.parallel,
-      cache=config.config.cache)
+@njit(
+    f8[:](Tuple((f8[:], i4[:], i4[:], UniTuple(i8, 2)))),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def sp_diag_(mat):
     data, indices, indptr, shape = mat
     length = min(shape[0], shape[1])
@@ -690,17 +755,32 @@ def sp_diag_(mat):
     return result
 
 
-@njit(b1[:, :](u1[:, :, :]), nogil=config.config.nogil, parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    b1[:, :](u1[:, :, :]),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def get_foreground_area_(trimapPreviewView):
     return trimapPreviewView[:, :, 1] == 255
 
 
-@njit(b1[:, :](u1[:, :, :]), nogil=config.config.nogil, parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    b1[:, :](u1[:, :, :]),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def get_background_area_(trimapPreviewView):
     return trimapPreviewView[:, :, 2] == 255
 
 
-@njit(b1[:, :](u1[:, :, :]), nogil=config.config.nogil, parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    b1[:, :](u1[:, :, :]),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def get_known_area_(trimapPreviewView):
     isForeground = get_foreground_area_(trimapPreviewView)
     isBackground = get_background_area_(trimapPreviewView)
@@ -708,13 +788,21 @@ def get_known_area_(trimapPreviewView):
     return isKnown
 
 
-@njit(b1[:, :](UniTuple(i8, 4), u1[:, :, :]), nogil=config.config.nogil, cache=config.config.cache)
+@njit(
+    b1[:, :](UniTuple(i8, 4), u1[:, :, :]),
+    nogil=config.config.nogil,
+    cache=config.config.cache,
+)
 def get_updated_foreground_area_(rect, trimapPreviewView):
     x0, y0, xn, yn = rect
     return trimapPreviewView[:, :, 1][y0:yn, x0:xn] == 255
 
 
-@njit(b1[:, :](UniTuple(i8, 4), u1[:, :, :], b1[:, :]), nogil=config.config.nogil, cache=config.config.cache)
+@njit(
+    b1[:, :](UniTuple(i8, 4), u1[:, :, :], b1[:, :]),
+    nogil=config.config.nogil,
+    cache=config.config.cache,
+)
 def get_updated_known_area_(rect, trimapPreviewView, isForeground):
     x0, y0, xn, yn = rect
     isBackground = trimapPreviewView[:, :, 2][y0:yn, x0:xn] == 255
@@ -722,20 +810,31 @@ def get_updated_known_area_(rect, trimapPreviewView, isForeground):
     return isKnown
 
 
-@njit(f8[:](u1[:, :, :], f8), nogil=config.config.nogil, parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    f8[:](u1[:, :, :], f8),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def make_b_(trimapPreviewView, lmd):
     isForeground = get_foreground_area_(trimapPreviewView)
     return flatten_2D_(lmd * isForeground)
 
 
-@njit(f8[:](u1[:, :, :], f8), nogil=config.config.nogil, parallel=config.config.parallel,
-      cache=config.config.cache)
+@njit(
+    f8[:](u1[:, :, :], f8),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def make_c_(trimapPreviewView, lmd):
     isKnown = get_known_area_(trimapPreviewView)
     return flatten_2D_(lmd * isKnown)
 
 
-@njit(i8[:](i8[:], i8[:], i8), cache=config.config.cache, parallel=config.config.parallel)
+@njit(
+    i8[:](i8[:], i8[:], i8), cache=config.config.cache, parallel=config.config.parallel
+)
 def addTile_(dest, a, reps):
     n = len(a)
     for i in prange(reps):
@@ -744,7 +843,11 @@ def addTile_(dest, a, reps):
     return dest
 
 
-@njit(Tuple((i8[:], f8[:]))(UniTuple(i8, 4), i8, f8[:], f8[:]), nogil=config.config.nogil, cache=config.config.cache)
+@njit(
+    Tuple((i8[:], f8[:]))(UniTuple(i8, 4), i8, f8[:], f8[:]),
+    nogil=config.config.nogil,
+    cache=config.config.cache,
+)
 def getUpdatedADiag_(rect, w, L_diag, c):
     x0, y0, xn, yn = rect
     starts = np.arange(y0, yn) * w + x0
@@ -754,10 +857,14 @@ def getUpdatedADiag_(rect, w, L_diag, c):
     return ind, A_diag
 
 
-@njit(f8[:](Tuple((f8[:], i4[:], i4[:], UniTuple(i8, 2))), f8[:]), nogil=config.config.nogil,
-      parallel=config.config.parallel, cache=config.config.cache)
+@njit(
+    f8[:](Tuple((f8[:], i4[:], i4[:], UniTuple(i8, 2))), f8[:]),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def sp_dot_(mat, b):
-    """ Calculates the sparse matrix vector product between a scipy.sparse.csr_matrix and a numpy.ndarray
+    """Calculates the sparse matrix vector product between a scipy.sparse.csr_matrix and a numpy.ndarray
     :param mat: tuple
     tuple containing the sparse matrix data, indices, indptr and shape
     :param b: numpy.ndarray
@@ -777,9 +884,14 @@ def sp_dot_(mat, b):
     return result
 
 
-@njit(UniTuple(f8[:], 3)(Tuple((f8[:], i4[:], i4[:], UniTuple(i8, 2))), f8[:], f8[:], f8[:]), nogil=config.config.nogil,
-      parallel=config.config.parallel,
-      cache=config.config.cache)
+@njit(
+    UniTuple(f8[:], 3)(
+        Tuple((f8[:], i4[:], i4[:], UniTuple(i8, 2))), f8[:], f8[:], f8[:]
+    ),
+    nogil=config.config.nogil,
+    parallel=config.config.parallel,
+    cache=config.config.cache,
+)
 def cgd_(A, alpha, r, p):
     Ap = sp_dot_(A, p)
     length = alpha.shape[0]

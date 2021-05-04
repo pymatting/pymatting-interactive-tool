@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from model.worker import Cropper, Project
@@ -6,7 +6,6 @@ from PyQt5 import QtCore as qtc
 
 
 class TestCropper(unittest.TestCase):
-
     def testCropping(self):
         project = Project.empty()
         cropper = Cropper()

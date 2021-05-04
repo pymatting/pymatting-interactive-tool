@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 import sys
 import unittest
 import numpy as np
@@ -20,13 +20,11 @@ from typing import Optional
 
 
 class MockEvent(Event):
-
     def wait(self, timeout: Optional[float] = ...) -> bool:
         return False
 
 
 class TestSolver(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls) -> None:
         if not setupImages():
@@ -38,16 +36,26 @@ class TestSolver(unittest.TestCase):
         imagesPath.cd("test_images")
         imageName = "GT15"
         canvas = Image(qtc.QDir(imagesPath.filePath("canvas")).filePath(imageName))
-        trimapPreview = trimapToRgba(Image(qtc.QDir(imagesPath.filePath("Trimap1")).filePath(imageName)))
-        alphaMatte = Image.full(canvas.size(), qtc.Qt.black, qtg.QImage.Format_Grayscale8)
+        trimapPreview = trimapToRgba(
+            Image(qtc.QDir(imagesPath.filePath("Trimap1")).filePath(imageName))
+        )
+        alphaMatte = Image.full(
+            canvas.size(), qtc.Qt.black, qtg.QImage.Format_Grayscale8
+        )
         return canvas, trimapPreview, alphaMatte
 
     def makeSolver(self):
         canvas, trimapPreview, alphaMatte = self.makeImages()
         eventQueue = Queue()
         continueEvent = MockEvent()
-        return canvas, trimapPreview, alphaMatte, continueEvent, eventQueue, Solver(canvas, trimapPreview, alphaMatte,
-                                                                                    eventQueue, continueEvent)
+        return (
+            canvas,
+            trimapPreview,
+            alphaMatte,
+            continueEvent,
+            eventQueue,
+            Solver(canvas, trimapPreview, alphaMatte, eventQueue, continueEvent),
+        )
 
     def testFlatten2D(self):
         _, _, _, _, _, solver = self.makeSolver()
@@ -117,7 +125,9 @@ class TestSolver(unittest.TestCase):
         eventQueue.put_nowait(UpdateEvent(Reason.lambdaChanged, 321))
         eventQueue.put_nowait(UpdateEvent(Reason.epsilonChanged, 22))
         eventQueue.put_nowait(UpdateEvent(Reason.methodChanged, Method.vcycle))
-        eventQueue.put_nowait(UpdateEvent(Reason.preconditionerChanged, Preconditioner.jacobi))
+        eventQueue.put_nowait(
+            UpdateEvent(Reason.preconditionerChanged, Preconditioner.jacobi)
+        )
         eventQueue.put_nowait(UpdateEvent(Reason.kernelChanged, Kernel.linear))
         solver.processEvents(eventQueue)
         self.assertEqual(1e-4, solver.get_rtol())
@@ -135,7 +145,11 @@ class TestSolver(unittest.TestCase):
         imagesPath.cdUp()
         imagesPath.cd("test_images")
         imageName = "GT15"
-        gt_alpha = Image(qtc.QDir(imagesPath.filePath("alpha")).filePath(imageName)).convertToFormat(qtg.QImage.Format_Grayscale8).rawView()
+        gt_alpha = (
+            Image(qtc.QDir(imagesPath.filePath("alpha")).filePath(imageName))
+            .convertToFormat(qtg.QImage.Format_Grayscale8)
+            .rawView()
+        )
         alpha_cgd_no_preconditioner = self.doCgd(Preconditioner.none, 967)
         alpha_cgd_jacobi = self.doCgd(Preconditioner.jacobi, 567)
         alpha_cgd_vcycle = self.doCgd(Preconditioner.vcycle, 72)
@@ -173,14 +187,10 @@ class TestSolver(unittest.TestCase):
     # numbers from https://en.wikipedia.org/wiki/Conjugate_gradient_method#Numerical_example
     def testCgd(self):
         _, _, _, _, _, solver = self.makeSolver()
-        A = csr_matrix(np.array([
-            [1, 0, 0],
-            [1, 2, 0],
-            [1, 2, 3]
-        ], dtype=np.float64))
+        A = csr_matrix(np.array([[1, 0, 0], [1, 2, 0], [1, 2, 3]], dtype=np.float64))
 
         b = np.array([1, 2, 3], dtype=np.float64)
-        alpha = np.array([0,0,0], dtype=np.float64)
+        alpha = np.array([0, 0, 0], dtype=np.float64)
         r = b - A.dot(alpha)
         p = r.copy()
         alpha, r, p = solver.cgd(A, alpha, r, p)
@@ -188,7 +198,7 @@ class TestSolver(unittest.TestCase):
         r = np.round(r, 2)
         p = np.round(p, 2)
         self.assertTrue(np.all(np.allclose([0.26, 0.53, 0.79], alpha, 1e-2)))
-        self.assertTrue(np.all(np.allclose([0.74, 0.68, -0.7],  r, 1e-2)))
+        self.assertTrue(np.all(np.allclose([0.74, 0.68, -0.7], r, 1e-2)))
         self.assertTrue(np.all(np.allclose([0.84, 0.89, -0.38], p, 1e-2)))
 
         alpha, r, p = solver.cgd(A, alpha, r, p)
@@ -432,22 +442,69 @@ class TestSolver(unittest.TestCase):
         self.assertTrue(np.all(solver.b == 0))
         trimapPreview.byteView()[100:200, 300:400] = Color.lightGreen.bgra()
         trimapPreview.byteView()[0:100, :] = Color.lightRed.bgra()
-        solver.updateSystem(AdjustingRect((0, 0), *shape).addRect(qtc.QRect(300, 100, 200, 200)))
-        self.assertTrue(np.all(solver.b.reshape(shape)[100:200, 300:400] == solver.get_lambda()))
-        self.assertTrue(np.all(solver.c.reshape(shape)[100:200, 300:400] == solver.get_lambda()))
+        solver.updateSystem(
+            AdjustingRect((0, 0), *shape).addRect(qtc.QRect(300, 100, 200, 200))
+        )
+        self.assertTrue(
+            np.all(solver.b.reshape(shape)[100:200, 300:400] == solver.get_lambda())
+        )
+        self.assertTrue(
+            np.all(solver.c.reshape(shape)[100:200, 300:400] == solver.get_lambda())
+        )
         self.assertTrue(np.all(solver.c.reshape(shape)[0:100, :] == 0))
 
-
         self.assertNotEqual(0, solver.A.nnz)
-        self.assertEqual(0, (solver.A - (solver.get_L() + scipy.sparse.diags(solver.c))).nnz)
-        self.assertTrue(np.all(solver.A.diagonal() == (solver.get_L() + scipy.sparse.diags(solver.c)).diagonal()))
-        self.assertTrue(np.all(solver.r == solver.get_b() - solver.spDot(solver.get_A(), solver.get_alpha())))
-        self.assertTrue(np.all(solver.get_m_diag() == solver.flatten2D(solver.get_A_diag() / solver.A.multiply(solver.A).sum(axis=0))))
+        self.assertEqual(
+            0, (solver.A - (solver.get_L() + scipy.sparse.diags(solver.c))).nnz
+        )
+        self.assertTrue(
+            np.all(
+                solver.A.diagonal()
+                == (solver.get_L() + scipy.sparse.diags(solver.c)).diagonal()
+            )
+        )
+        self.assertTrue(
+            np.all(
+                solver.r
+                == solver.get_b() - solver.spDot(solver.get_A(), solver.get_alpha())
+            )
+        )
+        self.assertTrue(
+            np.all(
+                solver.get_m_diag()
+                == solver.flatten2D(
+                    solver.get_A_diag() / solver.A.multiply(solver.A).sum(axis=0)
+                )
+            )
+        )
 
-        solver.updateSystem(AdjustingRect((0, 0), *shape).addRect(qtc.QRect(0, 0, shape[1], 100)))
-        self.assertTrue(np.all(solver.c.reshape(shape)[0:100, :] == solver.get_lambda()))
+        solver.updateSystem(
+            AdjustingRect((0, 0), *shape).addRect(qtc.QRect(0, 0, shape[1], 100))
+        )
+        self.assertTrue(
+            np.all(solver.c.reshape(shape)[0:100, :] == solver.get_lambda())
+        )
         self.assertNotEqual(0, solver.A.nnz)
-        self.assertEqual(0, (solver.A - (solver.get_L() + scipy.sparse.diags(solver.c))).nnz)
-        self.assertTrue(np.all(solver.A.diagonal() == (solver.get_L() + scipy.sparse.diags(solver.c)).diagonal()))
-        self.assertTrue(np.all(solver.r == solver.get_b() - solver.spDot(solver.get_A(), solver.get_alpha())))
-        self.assertTrue(np.all(solver.get_m_diag() == solver.flatten2D(solver.get_A_diag() / solver.A.multiply(solver.A).sum(axis=0))))
+        self.assertEqual(
+            0, (solver.A - (solver.get_L() + scipy.sparse.diags(solver.c))).nnz
+        )
+        self.assertTrue(
+            np.all(
+                solver.A.diagonal()
+                == (solver.get_L() + scipy.sparse.diags(solver.c)).diagonal()
+            )
+        )
+        self.assertTrue(
+            np.all(
+                solver.r
+                == solver.get_b() - solver.spDot(solver.get_A(), solver.get_alpha())
+            )
+        )
+        self.assertTrue(
+            np.all(
+                solver.get_m_diag()
+                == solver.flatten2D(
+                    solver.get_A_diag() / solver.A.multiply(solver.A).sum(axis=0)
+                )
+            )
+        )

@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -17,9 +17,15 @@ class FloodFiller(BaseWorker):
     finished = qtc.pyqtSignal(Image, qtc.QRectF)
 
     @qtc.pyqtSlot(Image, Image, qtg.QColor, qtc.QPoint, int)
-    def fill(self, canvas: Image, trimapPreview: Image, new_color: qtg.QColor, startPos: qtc.QPoint,
-             tol: int):
-        """ Performs floodfill algorithm in trimapPreview based on pixels in canvas starting at startPos and sets the
+    def fill(
+        self,
+        canvas: Image,
+        trimapPreview: Image,
+        new_color: qtg.QColor,
+        startPos: qtc.QPoint,
+        tol: int,
+    ):
+        """Performs floodfill algorithm in trimapPreview based on pixels in canvas starting at startPos and sets the
         colors to new_color
 
         :param canvas: Reference Image
@@ -39,8 +45,17 @@ class FloodFiller(BaseWorker):
             height, width, depth = canvasView.shape
             if rect.contains(qtc.QPoint(x_start, y_start)):
                 # colors needs to be in bgra form not argb
-                new_color = np.array([new_color.blue(), new_color.green(), new_color.red(), new_color.alpha()])
-                mask = fill_(canvasView, (x_start, y_start), (width, height, depth), tol).astype(bool)
+                new_color = np.array(
+                    [
+                        new_color.blue(),
+                        new_color.green(),
+                        new_color.red(),
+                        new_color.alpha(),
+                    ]
+                )
+                mask = fill_(
+                    canvasView, (x_start, y_start), (width, height, depth), tol
+                ).astype(bool)
                 trimapPreviewView[mask] = new_color
                 rect = findBoundingRect(mask)
                 self.finished.emit(before, rect)
@@ -50,14 +65,20 @@ class FloodFiller(BaseWorker):
             return None, None
 
 
-@njit(b1(i8, i8, i8, i8, f8[:, :]), nogil=config.config.nogil, cache=config.config.cache)
+@njit(
+    b1(i8, i8, i8, i8, f8[:, :]), nogil=config.config.nogil, cache=config.config.cache
+)
 def isValid_(y, x, maxWidth, maxHeight, visited):
     return x >= 0 and x < maxWidth and y >= 0 and y < maxHeight and visited[y, x] == 0
 
 
-@njit(f8[:, :](u1[:, :, :], UniTuple(i8, 2), UniTuple(i8, 3), i8), nogil=config.config.nogil, cache=config.config.cache)
+@njit(
+    f8[:, :](u1[:, :, :], UniTuple(i8, 2), UniTuple(i8, 3), i8),
+    nogil=config.config.nogil,
+    cache=config.config.cache,
+)
 def fill_(canvasView, startPos, shape, tolerance):
-    """ Performs the actual algorithm
+    """Performs the actual algorithm
 
     :param canvasView: Memory view of canvas
     :param startPos: starting position

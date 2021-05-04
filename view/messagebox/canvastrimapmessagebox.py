@@ -1,7 +1,8 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtWidgets as qtw
 from strings import canvasOrTrimapText, cancelText, trimapText, canvasText
+
 
 class MessageBoxCanvasOrTrimap(qtw.QMessageBox):
     Canvas = qtw.QMessageBox.AcceptRole  # 0

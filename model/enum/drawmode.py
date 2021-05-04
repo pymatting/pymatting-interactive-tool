@@ -1,12 +1,13 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from enum import Enum
 
+
 class DrawMode(Enum):
-    foreground=1,
-    background=2,
-    unknownTransparent= 3,
-    unknownColored=4
+    foreground = (1,)
+    background = (2,)
+    unknownTransparent = (3,)
+    unknownColored = 4
 
     def isForeground(self):
         return self == DrawMode.foreground

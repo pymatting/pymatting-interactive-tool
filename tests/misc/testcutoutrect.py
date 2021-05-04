@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from PyQt5 import QtCore as qtc
@@ -6,7 +6,6 @@ from model.misc import CutoutRect
 
 
 class TestCutoutRect(unittest.TestCase):
-
     def makeCutoutRect(self, width, height):
         return CutoutRect(qtc.QRectF(0, 0, width, height))
 
@@ -82,7 +81,7 @@ class TestCutoutRect(unittest.TestCase):
 
     def testTranslate(self):
         cutoutRect = self.makeCutoutRect(200, 400)
-        cutoutRect.translate(10,20)
-        self.assertEqual(cutoutRect.center(), qtc.QPointF(110,220))
-        cutoutRect.translate(-10,-20)
-        self.assertEqual(cutoutRect.center(), qtc.QPointF(100,200))
+        cutoutRect.translate(10, 20)
+        self.assertEqual(cutoutRect.center(), qtc.QPointF(110, 220))
+        cutoutRect.translate(-10, -20)
+        self.assertEqual(cutoutRect.center(), qtc.QPointF(100, 200))

@@ -1,11 +1,10 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from model.misc import UndoStack
 
 
 class TestUndoStack(unittest.TestCase):
-
     def test(self):
         maxSize = 100
         undoStack = UndoStack(maxSize)

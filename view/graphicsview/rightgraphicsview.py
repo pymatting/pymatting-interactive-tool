@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from .baseview import BaseView
 from view.messagebox import MessageBoxNewBackgroundOrAlpha
@@ -9,8 +9,7 @@ from strings import fileIsCorruptedText
 
 
 class RightGraphicsView(BaseView):
-
-    def onDrop(self, path:str):
+    def onDrop(self, path: str):
         image = Image(path)
         if image.isNull():
             showWarning(fileIsCorruptedText, FileNotFoundError("File not found."))

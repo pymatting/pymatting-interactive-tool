@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
@@ -10,7 +10,6 @@ from model.misc import Project
 class ScaleProjectDialog(qtw.QDialog):
 
     requestScale = qtc.pyqtSignal(Project, int, int, bool)
-    
 
     def __init__(self, project: Project, parent=None):
         super(ScaleProjectDialog, self).__init__(parent=parent)
@@ -27,9 +26,15 @@ class ScaleProjectDialog(qtw.QDialog):
 
     def setupWidgets(self):
         self.formWidget = FormWidget()
-        self.widthSpinBox = self.formWidget.addSpinBox("Width", 1, 10000, self.originalWidth, wrapping=False)
-        self.heightSpinBox = self.formWidget.addSpinBox("Height", 1, 10000, self.originalHeight, wrapping=False)
-        self.keepAspectRatioCheckBox = self.formWidget.addCheckBox("Keep Aspect Ratio", checked=True)
+        self.widthSpinBox = self.formWidget.addSpinBox(
+            "Width", 1, 10000, self.originalWidth, wrapping=False
+        )
+        self.heightSpinBox = self.formWidget.addSpinBox(
+            "Height", 1, 10000, self.originalHeight, wrapping=False
+        )
+        self.keepAspectRatioCheckBox = self.formWidget.addCheckBox(
+            "Keep Aspect Ratio", checked=True
+        )
         self.layout().addWidget(self.formWidget)
 
     def setupConnections(self):
@@ -49,7 +54,6 @@ class ScaleProjectDialog(qtw.QDialog):
             self.heightSpinBox.setValue(newWidth)
             self.heightSpinBox.blockSignals(False)
 
-
     def onHeightChanged(self, newHeight):
         self.lastChanged = "height"
         if self.keepAspectRatioCheckBox.isChecked():
@@ -59,7 +63,6 @@ class ScaleProjectDialog(qtw.QDialog):
             self.widthSpinBox.setValue(newHeight)
             self.widthSpinBox.blockSignals(False)
 
-
     def onKeepAspectRatioChecked(self, checked):
         if checked:
             if self.lastChanged == "width":
@@ -67,9 +70,10 @@ class ScaleProjectDialog(qtw.QDialog):
             else:
                 self.onHeightChanged(self.heightSpinBox.value())
 
-
     def setupButtons(self):
-        self.buttonBox = qtw.QDialogButtonBox(qtw.QDialogButtonBox.Cancel | qtw.QDialogButtonBox.Ok, qtc.Qt.Horizontal)
+        self.buttonBox = qtw.QDialogButtonBox(
+            qtw.QDialogButtonBox.Cancel | qtw.QDialogButtonBox.Ok, qtc.Qt.Horizontal
+        )
         self.layout().addWidget(self.buttonBox)
 
     def updateAspectRatio(self):
@@ -80,11 +84,13 @@ class ScaleProjectDialog(qtw.QDialog):
         self.originalHeight = self.project.canvasHeight()
         self.widthSpinBox.setValue(self.originalWidth)
         self.heightSpinBox.setValue(self.originalHeight)
-        
+
     def show(self) -> None:
         self.updateValues()
         super(ScaleProjectDialog, self).show()
 
     def accept(self) -> None:
-        self.requestScale.emit(self.project, self.widthSpinBox.value(), self.heightSpinBox.value(), False)
+        self.requestScale.emit(
+            self.project, self.widthSpinBox.value(), self.heightSpinBox.value(), False
+        )
         super(ScaleProjectDialog, self).accept()

@@ -1,27 +1,34 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
-brushToolTip = "(B)rush -\n" \
-               "Left-Click and Drag: Draw inside the trimap in the left view\n" \
-                "Shift+WheelUp/Shift+WheelDown or +/-: Increase/Decrease brush width\n" \
-                "1/2/3/4: Changes color to green(foreground)/red(background)/blue(unknown)/transparent(unknown)"
+brushToolTip = (
+    "(B)rush -\n"
+    "Left-Click and Drag: Draw inside the trimap in the left view\n"
+    "Shift+WheelUp/Shift+WheelDown or +/-: Increase/Decrease brush width\n"
+    "1/2/3/4: Changes color to green(foreground)/red(background)/blue(unknown)/transparent(unknown)"
+)
 
-paintBucketToolTip = "(P)aintbucket -\n" \
-                    "Left-Click: Fill trimap area based on canvas\n"\
-                    "Ctrl+Left-Click: Fill trimap area based on trimap\n"\
-                     "Shift+WheelUp/Shift+WheelDown or +/-: Increase/Decrease threshold value\n" \
-                     "1/2/3/4: Changes color to green(foreground)/red(background)/blue(unknown)/transparent(unknown)"
+paintBucketToolTip = (
+    "(P)aintbucket -\n"
+    "Left-Click: Fill trimap area based on canvas\n"
+    "Ctrl+Left-Click: Fill trimap area based on trimap\n"
+    "Shift+WheelUp/Shift+WheelDown or +/-: Increase/Decrease threshold value\n"
+    "1/2/3/4: Changes color to green(foreground)/red(background)/blue(unknown)/transparent(unknown)"
+)
 
-cropToolTip = "(C)rop - \n"\
-            "Left-Click and Drag: Select crop region\n"\
-            "Right-Click: Cancel"
+cropToolTip = (
+    "(C)rop - \n" "Left-Click and Drag: Select crop region\n" "Right-Click: Cancel"
+)
 
-scaleToolTip = "(S)cale - \n" \
-               "Opens up a Dialog where the Project can be scaled up or down."
+scaleToolTip = (
+    "(S)cale - \n" "Opens up a Dialog where the Project can be scaled up or down."
+)
 
 
-dragToolTip = "(D)rag - \n" \
-              "Press and move the left mouse button to pan around in both views.\n" \
-              "Pressing spacebar activates dragging, releasing the spacebar deactivates dragging."
+dragToolTip = (
+    "(D)rag - \n"
+    "Press and move the left mouse button to pan around in both views.\n"
+    "Pressing spacebar activates dragging, releasing the spacebar deactivates dragging."
+)
 
 clearTrimapToolTip = "Clear the Trimap."
 
@@ -31,7 +38,9 @@ startToolTip = "Start/Continue the calculations"
 
 pauseToolTip = "Pause the calculations."
 
-stopToolTip = "Stop the calculations.\nWarning: Pressing stop will reset the alpha matte."
+stopToolTip = (
+    "Stop the calculations.\nWarning: Pressing stop will reset the alpha matte."
+)
 
 fileTreeToolTip = "Show/Hide the File Explorer"
 
@@ -59,7 +68,9 @@ kernelToolTip = "<html><head/><body><p>Set the kernel for the V-Cycle solver.</p
 
 toleranceToolTip = "<html><head/><body><p>Set the tolerance value. Calculations will stop automatically, if the error falls below this value. All values get converted to 1e-tolerance except zero, which stands for &quot;disabled&quot; i.e. calculations never stop.</p><p>Default: disabled </p></body></html>"
 
-lambdaToolTip = "<html><head/><body><p>Constraint penalty</p><p>Default: 100</p></body></html>"
+lambdaToolTip = (
+    "<html><head/><body><p>Constraint penalty</p><p>Default: 100</p></body></html>"
+)
 
 preIterToolTip = "<html><head/><body><p>Number of smoothing iterations before each V-Cycle</p><p>Default: 1</p></body></html>"
 

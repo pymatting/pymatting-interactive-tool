@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from view.mainwindow import MainWindow
 from view.icon import Icon
@@ -11,8 +11,9 @@ except:
     # Not on windows
     pass
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
+
     app = qtw.QApplication(sys.argv)
     app.setWindowIcon(Icon("lemur"))
     try:

@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from model.worker import BaseWorker
@@ -22,7 +22,9 @@ class Cutter(BaseWorker):
     def cut(self, project: Project, nowait: bool):
         if self.running:
             try:
-                cut = cutout(project.canvas(), project.alphaMatte(), self.cutoutForeground)
+                cut = cutout(
+                    project.canvas(), project.alphaMatte(), self.cutoutForeground
+                )
                 if cut:
                     self.finished.emit(cut)
                     if nowait:
@@ -31,7 +33,7 @@ class Cutter(BaseWorker):
             except Exception as e:
                 self.error.emit(cutoutErrorText, e)
 
-    def moveToThread(self, thread: 'QThread') -> None:
+    def moveToThread(self, thread: "QThread") -> None:
         super(Cutter, self).moveToThread(thread)
 
     def start(self):

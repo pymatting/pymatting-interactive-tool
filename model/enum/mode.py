@@ -1,14 +1,14 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from enum import Enum
 
 
 class Mode(Enum):
-    brush = 0,
-    paintBucket = 1,
-    crop = 2,
-    drag = 3,
-    clearTrimap = 4,
+    brush = (0,)
+    paintBucket = (1,)
+    crop = (2,)
+    drag = (3,)
+    clearTrimap = (4,)
     clearNewBackground = 5
 
     def isBrush(self):

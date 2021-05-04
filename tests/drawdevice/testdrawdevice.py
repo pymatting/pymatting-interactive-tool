@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from PyQt5.QtGui import QPainter
@@ -8,7 +8,6 @@ from model.enum import DrawMode, Color
 
 
 class TestDrawDevice(unittest.TestCase):
-
     def testSetDrawModeForeground(self):
         drawDevice = DrawDevice()
         drawDevice.setDrawMode(DrawMode.foreground)

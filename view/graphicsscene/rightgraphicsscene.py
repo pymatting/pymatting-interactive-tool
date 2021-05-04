@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -17,8 +17,15 @@ class RightGraphicsScene(BaseScene):
 
     def __init__(self, project: Project, parent=None):
         super(RightGraphicsScene, self).__init__(project, parent)
-        self.settings = dict(showCutout=False, timer=qtc.QTimer(), enabled=True, FPS=60, cutout=None, hovered=False,
-                             moving=False)
+        self.settings = dict(
+            showCutout=False,
+            timer=qtc.QTimer(),
+            enabled=True,
+            FPS=60,
+            cutout=None,
+            hovered=False,
+            moving=False,
+        )
         self.setupWorker()
         self.setupConnections()
         self.restartTimer()
@@ -45,8 +52,12 @@ class RightGraphicsScene(BaseScene):
     ####################################################################################################################
 
     def mousePressEvent(self, event: qtw.QGraphicsSceneMouseEvent) -> None:
-        if self.leftButtonPressed(event) and self.project.cutoutRect().contains(event.scenePos()) \
-                and self.showCutout() and self.project.newBackground():
+        if (
+            self.leftButtonPressed(event)
+            and self.project.cutoutRect().contains(event.scenePos())
+            and self.showCutout()
+            and self.project.newBackground()
+        ):
             self.setMoving(True)
             self.project.setEdited()
 
@@ -58,11 +69,15 @@ class RightGraphicsScene(BaseScene):
                 self.project.cutoutRect().translate(diff.x(), diff.y())
 
     def mouseReleaseEvent(self, event: qtw.QGraphicsSceneMouseEvent) -> None:
-        if self.moving() and self.leftButtonReleased(event) and self.project.newBackground():
+        if (
+            self.moving()
+            and self.leftButtonReleased(event)
+            and self.project.newBackground()
+        ):
             self.setMoving(False)
             self.project.setEdited()
 
-    def mouseDoubleClickEvent(self, event: 'QGraphicsSceneMouseEvent') -> None:
+    def mouseDoubleClickEvent(self, event: "QGraphicsSceneMouseEvent") -> None:
         if self.showCutout():
             self.cutter.toggleCutoutMode()
 

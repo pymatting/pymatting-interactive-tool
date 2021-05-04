@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from PyQt5 import QtCore as qtc
@@ -8,11 +8,12 @@ from model.enum import Reason, Method, Kernel, Preconditioner
 
 
 class TestController(unittest.TestCase):
-
     def makeController(self):
         canvas = Image.empty(qtc.QSize(100, 100))
         trimapPreview = Image.empty(canvas.size())
-        alphaMatte = Image.full(canvas.size(), qtc.Qt.black, qtg.QImage.Format_Grayscale8)
+        alphaMatte = Image.full(
+            canvas.size(), qtc.Qt.black, qtg.QImage.Format_Grayscale8
+        )
         project = Project(canvas, alphaMatte, trimapPreview)
         return Controller(project)
 

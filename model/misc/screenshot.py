@@ -1,13 +1,11 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from model.misc import AdjustingRect, Image
 
 
 class Screenshot(qtc.QObject):
-    """ This class is used for Undo-Redo.
-
-    """
+    """This class is used for Undo-Redo."""
 
     def __init__(self, image: Image):
         super(Screenshot, self).__init__()

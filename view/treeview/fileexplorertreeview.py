@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -30,7 +30,9 @@ class FileExplorerTreeView(qtw.QTreeView):
 
         elif event.key() == qtc.Qt.Key_Delete and not self.editing:
             indices = self.selectedIndexes()
-            answer = qtw.QMessageBox.question(self, "Delete?", "Do you want to delete the selected files?")
+            answer = qtw.QMessageBox.question(
+                self, "Delete?", "Do you want to delete the selected files?"
+            )
             if answer == qtw.QMessageBox.Yes:
                 for index in indices:
                     try:
@@ -38,36 +40,58 @@ class FileExplorerTreeView(qtw.QTreeView):
                     except:
                         pass
 
-    def edit(self, index: qtc.QModelIndex, trigger: qtw.QAbstractItemView.EditTrigger, event: qtg.QMouseEvent) -> bool:
+    def edit(
+        self,
+        index: qtc.QModelIndex,
+        trigger: qtw.QAbstractItemView.EditTrigger,
+        event: qtg.QMouseEvent,
+    ) -> bool:
         self.editing = False
         if self.model():
             if self.model().data(index) == settingsFileName:
                 if trigger == qtw.QAbstractItemView.DoubleClicked:
-                    answer = qtw.QMessageBox.question(self, "Open?", "Do you want to open a new project?")
+                    answer = qtw.QMessageBox.question(
+                        self, "Open?", "Do you want to open a new project?"
+                    )
                     if answer == qtw.QMessageBox.Yes:
-                        path = qtc.QFileInfo(self.model().filePath(index)).dir().absolutePath()
+                        path = (
+                            qtc.QFileInfo(self.model().filePath(index))
+                            .dir()
+                            .absolutePath()
+                        )
                         self.requestOpenNewProject.emit(path)
-                return super(FileExplorerTreeView, self).edit(index, qtw.QAbstractItemView.SelectedClicked, event)
+                return super(FileExplorerTreeView, self).edit(
+                    index, qtw.QAbstractItemView.SelectedClicked, event
+                )
             elif trigger == qtw.QAbstractItemView.DoubleClicked:
                 imageViewer = ImageViewer([self.model().filePath(index)])
                 imageViewer.show()
                 self.imageViews.append(imageViewer)
-                return super(FileExplorerTreeView, self).edit(index, qtw.QAbstractItemView.SelectedClicked, event)
+                return super(FileExplorerTreeView, self).edit(
+                    index, qtw.QAbstractItemView.SelectedClicked, event
+                )
             elif trigger == qtw.QAbstractItemView.SelectedClicked:
                 path = self.model().filePath(index)
                 if qtc.QFileInfo(path).isFile():
                     path = qtc.QFileInfo(path).dir()
 
-                if path == self.project.path() or qtc.QDir(path).dirName() == self.project.title():
+                if (
+                    path == self.project.path()
+                    or qtc.QDir(path).dirName() == self.project.title()
+                ):
                     self.editing = True
-                    return super(FileExplorerTreeView, self).edit(index, qtw.QAbstractItemView.DoubleClicked, event)
+                    return super(FileExplorerTreeView, self).edit(
+                        index, qtw.QAbstractItemView.DoubleClicked, event
+                    )
             else:
                 return super(FileExplorerTreeView, self).edit(index, trigger, event)
         return super(FileExplorerTreeView, self).edit(index, trigger, event)
 
     def createModel(self, rootPath):
         fileSystemModel = qtw.QFileSystemModel()
-        fileSystemModel.setFilter(qtc.QDir.NoDot | qtc.QDir.NoDotDot | qtc.QDir.Files | qtc.QDir.Dirs)
+        fileSystemModel.setFilter(
+            qtc.QDir.NoDot | qtc.QDir.NoDotDot | qtc.QDir.Files | qtc.QDir.Dirs
+        )
         fileSystemModel.setReadOnly(False)
         fileSystemModel.setRootPath(rootPath)
         fileSystemModel.fileRenamed.connect(self.fileRenamed.emit)

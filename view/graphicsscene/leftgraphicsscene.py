@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -12,7 +12,12 @@ from model.misc import Project, UndoStack, Screenshot, AdjustingRect, Image
 from model.enum import Mode, DrawMode
 from model.util import showWarning, makeQThread, calculateDiffRect
 from model.worker import Cropper, Scaler
-from strings import acceptCropText, cropTitle, brushWidthSliderToolTip, paintBucketToolTip
+from strings import (
+    acceptCropText,
+    cropTitle,
+    brushWidthSliderToolTip,
+    paintBucketToolTip,
+)
 from .basescene import BaseScene
 from math import ceil
 
@@ -26,9 +31,13 @@ class LeftGraphicsScene(BaseScene):
 
     def __init__(self, project: Project, parent=None):
         super(LeftGraphicsScene, self).__init__(project, parent)
-        self.settings = dict(mode=Mode.brush, cursorPos=dict(last=None, current=None),
-                             drawDevices=dict(brush=Brush(), paintbucket=Paintbucket()), screenshot=None,
-                             cropArea=dict(start=None, end=None))
+        self.settings = dict(
+            mode=Mode.brush,
+            cursorPos=dict(last=None, current=None),
+            drawDevices=dict(brush=Brush(), paintbucket=Paintbucket()),
+            screenshot=None,
+            cropArea=dict(start=None, end=None),
+        )
 
         self.painting = False
         self.updateOnMouseMove = False
@@ -51,7 +60,9 @@ class LeftGraphicsScene(BaseScene):
 
     def setupConnection(self):
         self.paintbucket().filled.connect(self.onFloodFill)
-        self.project.canvasChanged.connect(lambda: self.updateSceneRect(self.project.canvas()))
+        self.project.canvasChanged.connect(
+            lambda: self.updateSceneRect(self.project.canvas())
+        )
         self.project.canvasChanged.connect(self.resetUndoStack)
         self.project.trimapPreviewChanged.connect(self.invalidateForeground)
         self.project.trimapPreviewChanged.connect(self.resetUndoStack)
@@ -65,13 +76,19 @@ class LeftGraphicsScene(BaseScene):
         self.paintbucketSpinBox.valueChanged.connect(self.setPaintbucketThreshold)
 
     def setupWidgets(self):
-        self.brushWidthSlider = HSlider(1, 100, 50, brushWidthSliderToolTip, tickInterval=4)
+        self.brushWidthSlider = HSlider(
+            1, 100, 50, brushWidthSliderToolTip, tickInterval=4
+        )
         self.brushWidthSlider.setFixedWidth(200)
         self.brushWidthSpinBox = SpinBox(1, 100, 50, wrapping=False)
-        self.paintbucketSpinBox = SpinBox(0, 442, 20, paintBucketToolTip, wrapping=False)
+        self.paintbucketSpinBox = SpinBox(
+            0, 442, 20, paintBucketToolTip, wrapping=False
+        )
         self.brushAction = qtw.QWidgetAction(self)
         self.brushGroupBox = HGroupBox("Brush Settings")
-        self.brushGroupBox.addWidgets(qtw.QLabel("Width"), self.brushWidthSlider, self.brushWidthSpinBox)
+        self.brushGroupBox.addWidgets(
+            qtw.QLabel("Width"), self.brushWidthSlider, self.brushWidthSpinBox
+        )
         self.brushAction.setDefaultWidget(self.brushGroupBox)
         self.paintBucketAction = qtw.QWidgetAction(self)
         self.paintBucketGroupBox = HGroupBox("Paintbucket Settings")
@@ -101,7 +118,9 @@ class LeftGraphicsScene(BaseScene):
         if self.leftButtonMoved(event):
             if self.mode().isBrush():
                 self.makeScreenshot()
-                rect = self.brush().drawLine(self.project.trimapPreview(), event.lastScenePos(), event.scenePos())
+                rect = self.brush().drawLine(
+                    self.project.trimapPreview(), event.lastScenePos(), event.scenePos()
+                )
                 self.screenshot().addRect(rect)
                 if self.updateOnMouseMove:
                     self.project.setEdited()
@@ -117,7 +136,9 @@ class LeftGraphicsScene(BaseScene):
             self.painting = False
             if self.mode().isBrush():
                 self.makeScreenshot()
-                rect = self.brush().drawPoint(self.project.trimapPreview(), event.scenePos())
+                rect = self.brush().drawPoint(
+                    self.project.trimapPreview(), event.scenePos()
+                )
                 self.screenshot().addRect(rect)
                 self.project.setEdited()
                 self.takeScreenshot(self.screenshot())
@@ -133,29 +154,41 @@ class LeftGraphicsScene(BaseScene):
                     self.crop(self.project.canvas().rect().intersected(cropRect))
             elif self.mode().isPaintbucket():
                 if event.modifiers() == qtc.Qt.ControlModifier:
-                    self.paintbucket().fill(self.project.trimapPreview(), self.project.trimapPreview(),
-                                            event.scenePos(), tolerance=0)
+                    self.paintbucket().fill(
+                        self.project.trimapPreview(),
+                        self.project.trimapPreview(),
+                        event.scenePos(),
+                        tolerance=0,
+                    )
                 else:
-                    self.paintbucket().fill(self.project.canvas(), self.project.trimapPreview(), event.scenePos())
+                    self.paintbucket().fill(
+                        self.project.canvas(),
+                        self.project.trimapPreview(),
+                        event.scenePos(),
+                    )
 
         self.resetCropRect()
         self.invalidateForeground()
 
     def previewRect(self):
-        return AdjustingRect().addPoints([self.lastPos(), self.pos()], self.brush().previewRadius()).toQRectF()
+        return (
+            AdjustingRect()
+            .addPoints([self.lastPos(), self.pos()], self.brush().previewRadius())
+            .toQRectF()
+        )
 
     def mouseDoubleClickEvent(self, event: qtw.QGraphicsSceneMouseEvent) -> None:
         self.mousePressEvent(event)
 
     def keyPressEvent(self, event: qtg.QKeyEvent) -> None:
         super(LeftGraphicsScene, self).keyPressEvent(event)
-        if (event.key() == qtc.Qt.Key_1):
+        if event.key() == qtc.Qt.Key_1:
             self.setDrawMode(DrawMode.foreground)
-        elif (event.key() == qtc.Qt.Key_2):
+        elif event.key() == qtc.Qt.Key_2:
             self.setDrawMode(DrawMode.background)
-        elif (event.key() == qtc.Qt.Key_3):
+        elif event.key() == qtc.Qt.Key_3:
             self.setDrawMode(DrawMode.unknownColored)
-        elif (event.key() == qtc.Qt.Key_4):
+        elif event.key() == qtc.Qt.Key_4:
             self.setDrawMode(DrawMode.unknownTransparent)
         elif event.key() == qtc.Qt.Key_Plus:
             if self.mode().isBrush():
@@ -229,7 +262,11 @@ class LeftGraphicsScene(BaseScene):
 
     def cropRect(self):
         if self.cropStart() and self.cropEnd() and self.cropStart() != self.cropEnd():
-            return qtc.QRectF(self.cropStart(), self.cropEnd()).toAlignedRect().normalized()
+            return (
+                qtc.QRectF(self.cropStart(), self.cropEnd())
+                .toAlignedRect()
+                .normalized()
+            )
         else:
             return None
 
@@ -342,12 +379,13 @@ class LeftGraphicsScene(BaseScene):
 
     @qtc.pyqtSlot()
     def adjustMaxBrushWidth(self):
-        maxPenWidth = ceil(max(self.project.canvasWidth(), self.project.canvasHeight()) * 0.2)
+        maxPenWidth = ceil(
+            max(self.project.canvasWidth(), self.project.canvasHeight()) * 0.2
+        )
         self.brushWidthSpinBox.setMaximum(maxPenWidth)
         self.brushWidthSlider.setMaximum(maxPenWidth)
         self.brushWidthSlider.setTickInterval(ceil(maxPenWidth / 25))
-        self.brushSliderStep = ceil(maxPenWidth/100)
-
+        self.brushSliderStep = ceil(maxPenWidth / 100)
 
     @qtc.pyqtSlot()
     def clearTrimapPreview(self):
@@ -394,8 +432,11 @@ class LeftGraphicsScene(BaseScene):
                     painter.setFont(font)
                     transformed_rect = painter.transform().mapRect(rect)
                     painter.resetTransform()
-                    painter.drawText(transformed_rect, qtc.Qt.AlignCenter | qtc.Qt.TextDontClip,
-                                     f" [{rect.width()} x {rect.height()}]")
+                    painter.drawText(
+                        transformed_rect,
+                        qtc.Qt.AlignCenter | qtc.Qt.TextDontClip,
+                        f" [{rect.width()} x {rect.height()}]",
+                    )
 
     def renderBrushPreview(self):
         if self.mode().isBrush() and self.lastPos() and self.pos():
@@ -413,17 +454,20 @@ class LeftGraphicsScene(BaseScene):
         self.invalidateForeground()
 
     def increaseSliderValue(self):
-        self.brushWidthSlider.setValue(self.brushWidthSlider.value() + self.brushSliderStep)
+        self.brushWidthSlider.setValue(
+            self.brushWidthSlider.value() + self.brushSliderStep
+        )
 
     def decreaseSliderValue(self):
-        self.brushWidthSlider.setValue(self.brushWidthSlider.value() - self.brushSliderStep)
+        self.brushWidthSlider.setValue(
+            self.brushWidthSlider.value() - self.brushSliderStep
+        )
 
     def increasePaintbucktThreshold(self, step=1):
         self.paintbucketSpinBox.setValue(self.paintbucketSpinBox.value() + step)
 
     def decreasePaintbucketThreshold(self, step=1):
         self.paintbucketSpinBox.setValue(self.paintbucketSpinBox.value() - step)
-
 
     def makeScreenshot(self):
         if not self.screenshot():

@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtWidgets as qtw
 from model.misc import CutoutRect
@@ -8,7 +8,6 @@ from view.pushbutton import PushButton
 
 
 class TransformationContextMenu(qtw.QMenu):
-
     def __init__(self, cutoutRect: CutoutRect, parent=None, title="Transform"):
         super(TransformationContextMenu, self).__init__(title, parent)
         self.cutoutRect = cutoutRect
@@ -29,7 +28,7 @@ class TransformationContextMenu(qtw.QMenu):
         self.addAction(action)
 
     def createScalingWidgets(self, layout: qtw.QGridLayout):
-        """ Create Widgets to scale the cutout preview """
+        """Create Widgets to scale the cutout preview"""
         width, height = self.cutoutRect.width(), self.cutoutRect.height()
         self.widthSpinBox = SpinBox(1, 10000, width, wrapping=False)
         self.heightSpinBox = SpinBox(1, 10000, height, wrapping=False)
@@ -45,7 +44,7 @@ class TransformationContextMenu(qtw.QMenu):
         layout.addWidget(self.heightSpinBox, 1, 3)
 
     def createRotationSlider(self, layout: qtw.QGridLayout):
-        """ Create Widgets used to rotate the cutout preview label """
+        """Create Widgets used to rotate the cutout preview label"""
         angle = self.cutoutRect.angle()
         self.rotationSlider = HSlider(0, 360, angle, tickInterval=30)
         self.rotationSpinBox = SpinBox(0, 360, angle)
@@ -59,7 +58,7 @@ class TransformationContextMenu(qtw.QMenu):
         layout.addWidget(self.rotationSpinBox, 0, 3)
 
     def setupMirroringButtons(self, layout: qtw.QGridLayout):
-        """ Create Widgets to mirror the cutout preview """
+        """Create Widgets to mirror the cutout preview"""
         mirrorVertical = PushButton("Vertical")
         mirrorHorizontal = PushButton("Horizontal")
         desc = qtw.QLabel("Mirror")

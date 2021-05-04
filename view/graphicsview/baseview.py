@@ -1,10 +1,9 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
 from PyQt5 import QtWidgets as qtw
 from model.misc import Project, Image
-
 
 
 class BaseView(qtw.QGraphicsView):
@@ -43,7 +42,14 @@ class BaseView(qtw.QGraphicsView):
         if event.buttons() == qtc.Qt.MiddleButton:
             self.dragEnabled.emit(True)
             self.mousePressEvent(
-                qtg.QMouseEvent(event.type(), event.pos(), qtc.Qt.LeftButton, qtc.Qt.LeftButton, event.modifiers()))
+                qtg.QMouseEvent(
+                    event.type(),
+                    event.pos(),
+                    qtc.Qt.LeftButton,
+                    qtc.Qt.LeftButton,
+                    event.modifiers(),
+                )
+            )
 
     def mouseReleaseEvent(self, event: qtg.QMouseEvent) -> None:
         super(BaseView, self).mouseReleaseEvent(event)
@@ -57,7 +63,7 @@ class BaseView(qtw.QGraphicsView):
 
     def keyReleaseEvent(self, event: qtg.QKeyEvent) -> None:
         super(BaseView, self).keyReleaseEvent(event)
-        if (event.key() == qtc.Qt.Key_Space and not event.isAutoRepeat()):
+        if event.key() == qtc.Qt.Key_Space and not event.isAutoRepeat():
             self.dragEnabled.emit(False)
 
     def wheelEvent(self, event: qtg.QWheelEvent) -> None:
@@ -134,5 +140,5 @@ class BaseView(qtw.QGraphicsView):
     def zoomOut(self):
         self.scale(1 / self.scaleFactor, 1 / self.scaleFactor)
 
-    def onDrop(self, path:str):
+    def onDrop(self, path: str):
         pass

@@ -1,11 +1,11 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from math import inf
 
 
 class AdjustingRect:
-    """ An AdjustingRect is a growing rectangle that surrounds the points added to this. This class is implemented as a
+    """An AdjustingRect is a growing rectangle that surrounds the points added to this. This class is implemented as a
     Builder class, which means, most functions in this class return the object itself to chain multiple method calls
     e.g:
     x...points
@@ -32,7 +32,9 @@ class AdjustingRect:
 
     @classmethod
     def fromRect(cls, rect: qtc.QRect):
-        return cls((rect.topLeft().x(), rect.topLeft().y()), rect.height(), rect.width())
+        return cls(
+            (rect.topLeft().x(), rect.topLeft().y()), rect.height(), rect.width()
+        )
 
     def adjust(self, x0, y0, xn, ym):
         if x0 == xn or y0 == ym:
@@ -47,7 +49,7 @@ class AdjustingRect:
             self.ym = ym if ym < self.max_y else self.max_y
 
     def addRect(self, rect):
-        """ Adjust this instance with another rectangle
+        """Adjust this instance with another rectangle
         :param rect: Another rectangle
         :return: self
         """
@@ -63,7 +65,7 @@ class AdjustingRect:
         return self
 
     def addPoint(self, point: qtc.QPointF, penRadius: float = 1):
-        """ Adjust this instance with a point
+        """Adjust this instance with a point
 
         :param point: A point
         :param penRadius: The current pen radius
@@ -71,7 +73,12 @@ class AdjustingRect:
         """
 
         if penRadius >= 1:
-            rect = qtc.QRectF(point.x() - penRadius, point.y() - penRadius, penRadius * 2, penRadius * 2)
+            rect = qtc.QRectF(
+                point.x() - penRadius,
+                point.y() - penRadius,
+                penRadius * 2,
+                penRadius * 2,
+            )
             self.addRect(rect)
         return self
 
@@ -81,7 +88,7 @@ class AdjustingRect:
         return self
 
     def boundingCoordinates(self):
-        """ Return the bounding corrdinates of this instance
+        """Return the bounding corrdinates of this instance
         :return: (topLeftX, topLefty, bottomLeftX, bottomLeftY)
         """
         return self.x0, self.y0, self.xn, self.ym
@@ -97,7 +104,11 @@ class AdjustingRect:
     def toQRect(self, normalized=False):
         rectf = self.toQRectF()
         if rectf:
-            return rectf.toAlignedRect() if not normalized else rectf.toAlignedRect().normalized()
+            return (
+                rectf.toAlignedRect()
+                if not normalized
+                else rectf.toAlignedRect().normalized()
+            )
         else:
             return None
 

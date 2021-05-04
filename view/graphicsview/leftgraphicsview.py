@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from .baseview import BaseView
@@ -78,7 +78,7 @@ class LeftGraphicsView(BaseView):
         elif mode.isCrop():
             self.setCursor(qtc.Qt.ArrowCursor)
 
-    def onDrop(self, path:str):
+    def onDrop(self, path: str):
         image = Image(path)
         if image.isNull():
             showWarning(fileIsCorruptedText, FileNotFoundError("Could not find file"))

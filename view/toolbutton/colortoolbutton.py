@@ -1,11 +1,10 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtGui as qtg
 from PyQt5 import QtWidgets as qtw
 
 
 class ColorToolButton(qtw.QToolButton):
-
     def __init__(self, toolTip, color):
         super(ColorToolButton, self).__init__()
         self.setAutoExclusive(False)

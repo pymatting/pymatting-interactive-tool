@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 import unittest
 from PyQt5 import QtCore as qtc
@@ -9,7 +9,6 @@ import numpy as np
 
 
 class TestPen(unittest.TestCase):
-
     def testSetWidth(self):
         pen = Pen(qtc.Qt.SolidLine, qtc.Qt.RoundCap, qtc.Qt.RoundJoin)
         pen.setWidth(20)
@@ -36,7 +35,7 @@ class TestPen(unittest.TestCase):
         after = np.copy(image.byteView())
         self.assertTrue(np.any(before != after))
         self.assertTrue(np.all(after.diagonal()[1, :] == 255))
-        self.assertTrue(rect == qtc.QRect(-2,-2, 14, 14))
+        self.assertTrue(rect == qtc.QRect(-2, -2, 14, 14))
 
     def testDrawPoint(self):
         image = Image.empty(qtc.QSize(10, 10))
@@ -46,4 +45,4 @@ class TestPen(unittest.TestCase):
         rect = pen.drawPoint(image, qtc.QPointF(5, 5))
         after = np.copy(image.byteView())
         self.assertTrue(np.any(before != after))
-        self.assertTrue(rect == qtc.QRect(3,3,4,4))
+        self.assertTrue(rect == qtc.QRect(3, 3, 4, 4))

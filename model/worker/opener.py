@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from model.enum import Status
@@ -36,10 +36,16 @@ class Opener(BaseWorker):
         dir = qtc.QDir(projectPath)
         canvas = Image(dir.filePath(fileNames["canvas"]))
         if not canvas.isNull():
-            newBackground = Image(dir.filePath(fileNames["newBackground"]) if fileNames["newBackground"] else "")
+            newBackground = Image(
+                dir.filePath(fileNames["newBackground"])
+                if fileNames["newBackground"]
+                else ""
+            )
             alphaMatte = Image(dir.filePath(fileNames["alphaMatte"]))
             trimap = Image(dir.filePath(fileNames["trimap"]))
-            project.changeImages(canvas, alphaMatte, trimap=trimap, newBackground=newBackground)
+            project.changeImages(
+                canvas, alphaMatte, trimap=trimap, newBackground=newBackground
+            )
             if newBackground.isNull():
                 project.cutoutRect().resetCenter()
 

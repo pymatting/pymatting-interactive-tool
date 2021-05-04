@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5.QtCore import QPoint, QPointF, pyqtSignal, pyqtSlot, QRectF
 from PyQt5.QtGui import QColor
@@ -41,7 +41,9 @@ class Paintbucket(DrawDevice):
         self.start.connect(self.floodFiller.fill)
 
     def setupWorker(self):
-        self.floodFiller, self.floodFillerThread = makeQThread(FloodFiller(), "Floodfiller")
+        self.floodFiller, self.floodFillerThread = makeQThread(
+            FloodFiller(), "Floodfiller"
+        )
 
     ####################################################################################################################
     #                                                                                                                  #
@@ -67,8 +69,15 @@ class Paintbucket(DrawDevice):
     #                                                                                                                  #
     ####################################################################################################################
 
-    def fill(self, canvas: Image, trimapPreview: Image, startPos: QPointF, nowait=False, tolerance=None):
-        """ Fill trimapPreview based on pixels in canvas image
+    def fill(
+        self,
+        canvas: Image,
+        trimapPreview: Image,
+        startPos: QPointF,
+        nowait=False,
+        tolerance=None,
+    ):
+        """Fill trimapPreview based on pixels in canvas image
 
         :param canvas: Reference Image where the neighbouring pixels are searched
         :param trimapPreview: Image to be filled
@@ -78,7 +87,13 @@ class Paintbucket(DrawDevice):
         :return: If nowait is True, returns a copy of the image before the change aswell as the area that was filled.
         If nowait is False, the result is emitted with the filled(..) signal. This function then returns None
         """
-        param = (canvas, trimapPreview, self.color(), startPos.toPoint(), self.tolerance() if tolerance is None else tolerance)
+        param = (
+            canvas,
+            trimapPreview,
+            self.color(),
+            startPos.toPoint(),
+            self.tolerance() if tolerance is None else tolerance,
+        )
         if nowait:
             return self.floodFiller.fill(*param)
         else:

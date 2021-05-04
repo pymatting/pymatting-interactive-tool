@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -12,8 +12,14 @@ class Pen(DrawDevice):
     capstyle aswell as the joinstyle of this pen
     """
 
-    def __init__(self, style: qtc.Qt.PenStyle, capStyle: qtc.Qt.PenCapStyle, joinStyle: qtc.Qt.PenJoinStyle, width=50,
-                 previewWidth=1):
+    def __init__(
+        self,
+        style: qtc.Qt.PenStyle,
+        capStyle: qtc.Qt.PenCapStyle,
+        joinStyle: qtc.Qt.PenJoinStyle,
+        width=50,
+        previewWidth=1,
+    ):
         super(Pen, self).__init__()
         self.setStyle(style)
         self.setCapStyle(capStyle)
@@ -84,10 +90,12 @@ class Pen(DrawDevice):
     ####################################################################################################################
 
     def pen(self):
-        return qtg.QPen(self.color(), self.width(), self.style(), self.capStyle(), self.joinStyle())
+        return qtg.QPen(
+            self.color(), self.width(), self.style(), self.capStyle(), self.joinStyle()
+        )
 
     def drawLine(self, image: Image, start: qtc.QPointF, end: qtc.QPointF):
-        """ Draw a line in the given image between start and end
+        """Draw a line in the given image between start and end
 
         :param image: Target image
         :param start: Start position of the line
@@ -102,7 +110,7 @@ class Pen(DrawDevice):
         return AdjustingRect().addPoints([start, end], self.previewRadius()).toQRect()
 
     def drawPoint(self, image: Image, pos: qtc.QPointF):
-        """ Draw a point in the given image at position pos
+        """Draw a point in the given image at position pos
 
         :param image: Target image
         :param pos: Position of the point

@@ -1,4 +1,4 @@
-#Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
+# Copyright (C) 2020-2021  Burak Martin (see 'AUTHOR' for full notice)
 
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
@@ -22,14 +22,20 @@ class Project(qtc.QObject):
     # Signal(Is the new background none?)
     newBackgroundChanged = qtc.pyqtSignal(bool)
 
-    def __init__(self, canvas, alphaMatte, trimapPreview, newBackground=None, parent=None):
+    def __init__(
+        self, canvas, alphaMatte, trimapPreview, newBackground=None, parent=None
+    ):
         super(Project, self).__init__(parent)
-        self.images = dict(canvas=canvas,
-                           trimapPreview=trimapPreview,
-                           alphaMatte=alphaMatte,
-                           newBackground=newBackground)
+        self.images = dict(
+            canvas=canvas,
+            trimapPreview=trimapPreview,
+            alphaMatte=alphaMatte,
+            newBackground=newBackground,
+        )
 
-        self.__settings = dict(strings=dict(project=dict(title=self.defaultProjectTitle())))
+        self.__settings = dict(
+            strings=dict(project=dict(title=self.defaultProjectTitle()))
+        )
         self.resetFileNames()
         self.resetCutoutRect()
         self._edited = False
@@ -53,11 +59,13 @@ class Project(qtc.QObject):
     ####################################################################################################################
 
     def resetFileNames(self):
-        self.__settings["strings"]["fileName"] = dict(canvas="canvas.png",
-                                                      alphaMatte="alpha.png",
-                                                      newBackground=None,
-                                                      cutout="cutout.png",
-                                                      trimap="trimap.png")
+        self.__settings["strings"]["fileName"] = dict(
+            canvas="canvas.png",
+            alphaMatte="alpha.png",
+            newBackground=None,
+            cutout="cutout.png",
+            trimap="trimap.png",
+        )
 
     def setReduceColorBleeding(self, b):
         self.__reduceColorBleeding = b
@@ -81,7 +89,9 @@ class Project(qtc.QObject):
             self.images["alphaMatte"] = alphaMatte
             self.alphaMatteChanged.emit()
         elif alphaMatte and alphaMatte.isNull():
-            alphaMatte = Image.full(self.canvas().size(), Color.black.value, Image.Format_Grayscale8)
+            alphaMatte = Image.full(
+                self.canvas().size(), Color.black.value, Image.Format_Grayscale8
+            )
             self.images["alphaMatte"] = alphaMatte
             self.alphaMatteChanged.emit()
 
@@ -100,7 +110,6 @@ class Project(qtc.QObject):
         else:
             self.setTrimapPreview(Image.empty(self.canvas().size()))
 
-
     def setNewBackground(self, newBackground: Image, delete=True):
         if newBackground and newBackground.isNull():
             self.__settings["strings"]["fileName"]["newBackground"] = None
@@ -109,12 +118,18 @@ class Project(qtc.QObject):
             if newBackground.format() != Image.Format_ARGB32:
                 newBackground = newBackground.convertToFormat(Image.Format_ARGB32)
             if not self.newBackgroundName():
-                self.__settings["strings"]["fileName"]["newBackground"] = "newBackground.png"
+                self.__settings["strings"]["fileName"][
+                    "newBackground"
+                ] = "newBackground.png"
             self.images["newBackground"] = newBackground
         else:
             dir = qtc.QDir(self.path())
             filePath = dir.filePath(self.newBackgroundName())
-            if delete and qtc.QFileInfo(dir.absolutePath()).isDir() and qtc.QFileInfo(filePath).isFile():
+            if (
+                delete
+                and qtc.QFileInfo(dir.absolutePath()).isDir()
+                and qtc.QFileInfo(filePath).isFile()
+            ):
                 dir.remove(self.newBackgroundName())
             self.__settings["strings"]["fileName"]["newBackground"] = None
             self.images["newBackground"] = newBackground
@@ -151,7 +166,17 @@ class Project(qtc.QObject):
     def setImages(self, images: dict):
         self.images = images
 
-    def changeImages(self, canvas, alphaMatte, trimapPreview=None, trimap=None, newBackground=-1, resetCutout=False, edited=False, aspectRatioChanged=True):
+    def changeImages(
+        self,
+        canvas,
+        alphaMatte,
+        trimapPreview=None,
+        trimap=None,
+        newBackground=-1,
+        resetCutout=False,
+        edited=False,
+        aspectRatioChanged=True,
+    ):
         self.setCanvas(canvas)
         self.setAlphaMatte(alphaMatte)
         if trimapPreview:
@@ -188,8 +213,13 @@ class Project(qtc.QObject):
         return self.__reduceColorBleeding
 
     def names(self):
-        return [self.canvasName(), self.alphaMatteName(), self.trimapName(), self.cutoutName(),
-                self.newBackgroundName()]
+        return [
+            self.canvasName(),
+            self.alphaMatteName(),
+            self.trimapName(),
+            self.cutoutName(),
+            self.newBackgroundName(),
+        ]
 
     def canvas(self) -> Image:
         return self.images["canvas"]
@@ -232,7 +262,9 @@ class Project(qtc.QObject):
         self.setTrimapPreview(trimapPreview)
 
     def clearAlphaMatte(self):
-        alphaMatte = Image.full(self.canvas().size(), Color.black.value, qtg.QImage.Format_Grayscale8)
+        alphaMatte = Image.full(
+            self.canvas().size(), Color.black.value, qtg.QImage.Format_Grayscale8
+        )
         self.setAlphaMatte(alphaMatte)
 
     def removeNewBackground(self):
@@ -316,7 +348,11 @@ class Project(qtc.QObject):
     def cutout(self):
         if self.reduceColorBleeding():
             foregroundEstimate = ndarrayToImage(
-                estimate_foreground_ml(self.canvas().rgbView(True), self.alphaMatte().rawView(True)), True)
+                estimate_foreground_ml(
+                    self.canvas().rgbView(True), self.alphaMatte().rawView(True)
+                ),
+                True,
+            )
             cut = cutout(foregroundEstimate, self.alphaMatte())
         else:
             cut = cutout(self.canvas(), self.alphaMatte())
