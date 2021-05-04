@@ -38,4 +38,4 @@ class DoubleSpinBox(qtw.QDoubleSpinBox):
         self.setToolTip(toolTip)
         self.setWrapping(wrapping)
         self.setAccelerated(True)
-        self.setStepType(qtw.QAbstractSpinBox.AdaptiveDecimalStepType)
+        # self.setStepType(qtw.QAbstractSpinBox.AdaptiveDecimalStepType)
